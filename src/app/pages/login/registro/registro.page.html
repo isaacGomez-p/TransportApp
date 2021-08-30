@@ -1,0 +1,73 @@
+<ion-nav>
+    <ion-footer>
+        <ion-toolbar color="light">
+            <ion-title color="dark">
+                <div class="login-title"><strong>Bienvenido</strong></div>
+            </ion-title>
+        </ion-toolbar>
+    </ion-footer>
+
+    <ion-content>
+
+        <form #form="ngForm" (submit)="registrar(form)">
+            <ion-list>
+
+                <ion-item>
+                    <ion-label fixed>Nombre</ion-label>
+                    <ion-input type="text" [(ngModel)]="nombre" name="nombre" ngModel required></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label fixed>Cedula</ion-label>
+                    <ion-input type="number" [(ngModel)]="cedula" name="cedula" ngModel required></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label fixed>Celular</ion-label>
+                    <ion-input type="number" [(ngModel)]="telefono" name="telefono" ngModel required></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label>Nacimiento</ion-label>
+                    <ion-datetime [(ngModel)]="fecha" name="fecha" placeholder="Seleccione" ngModel required>
+                    </ion-datetime>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label fixed>Correo electrónico</ion-label>
+                    <ion-input type="email" [(ngModel)]="correo" name="correo" ngModel required></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label floating>Usuario</ion-label>
+                    <ion-input type="text" [(ngModel)]="usuario" name="usuario" ngModel required></ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label fixed>Contraseña</ion-label>
+                    <ion-input type="password" [(ngModel)]="contrasenia" name="contrasenia" ngModel required>
+                    </ion-input>
+                </ion-item>
+
+                <ion-item>
+                    <ion-label fixed>Repetir</ion-label>
+                    <ion-input type="password" [(ngModel)]="confirContra" name="confirContra" ngModel required>
+                    </ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label fixed>Rol</ion-label>
+                    <ion-select [(ngModel)]="rol" name="rol" placeholder="Seleccione un rol" ngModel required>
+                        <ion-select-option *ngFor="let roles of listaRoles" value="{{roles.idRol}}">{{ roles.nombre }}
+                        </ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <div padding>
+                    <ion-button size="large" type="submit" [disabled]="form.invalid" expand="block">Siguiente</ion-button>
+                </div>
+                <div padding>
+                    <ion-button size="large" color="danger" expand="block" [routerLink]="['/login']">Volver</ion-button>
+                </div>
+            </ion-list>
+        </form>
+    </ion-content>
+</ion-nav>

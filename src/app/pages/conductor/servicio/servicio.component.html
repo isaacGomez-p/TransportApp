@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary" menu="menuPrincipal"></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title stacked class="my-title" color="primary">
+      <div font size=1 align="center"><i>
+          <H6>Servicios Disponibles</H6>
+        </i></div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <ion-title color="light">
+      <div align="center" style="font-size: 0.7rem"><strong>TransportApp 1.0</strong></div>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>
+
+<ion-content>
+
+  <ion-list *ngFor="let s of servicios">
+    <ion-item button (click)="detalles(s)">      
+      <ion-label text-wrap>
+        <h3>Origen: {{s.lugarOrigen}} - Destino: {{s.lugarDestino}}</h3>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>

@@ -1,0 +1,49 @@
+<ion-nav>
+  <ion-footer>
+    <ion-toolbar color="light">
+      <ion-title color="dark">
+        <div class="login-title"><strong>Bienvenido</strong></div>
+      </ion-title>
+    </ion-toolbar>
+  </ion-footer>
+
+  <ion-content>
+    <form #formConductor="ngForm" (submit)="registrar(formConductor)">
+      <ion-list>
+
+        <ion-radio-group [(ngModel)]="rol" name="rol" ngModel required>
+          <ion-list-header>
+            <ion-label>Tipo de vehículo</ion-label>
+          </ion-list-header>
+          <ion-item *ngFor="let tipo of tipoVehiculo" >
+            <ion-label text-wrap>{{tipo.nombre}}</ion-label>
+            <ion-radio slot="start" value="{{tipo.id}}"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+
+        <ion-item>
+          <ion-label fixed>Placa</ion-label>
+          <ion-input type="text" [(ngModel)]="placa" name="placa" ngModel required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label fixed>Capacidad</ion-label>
+          <ion-input type="number" [(ngModel)]="capacidad" name="capacidad" ngModel required></ion-input>
+          <div class="input-group-append">
+            <span class="input-group-text">KG</span>
+          </div>
+        </ion-item>
+
+        <div padding>
+          <ion-button size="large" type="submit" [disabled]="formConductor.invalid" expand="block">Siguiente
+          </ion-button>
+        </div>
+
+        <div padding>
+          <ion-button size="large" color="danger" expand="block" [routerLink]="['/login']">Volver</ion-button>
+        </div>
+
+      </ion-list>
+    </form>
+  </ion-content>
+</ion-nav>

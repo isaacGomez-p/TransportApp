@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">CERRAR</ion-button>
+    </ion-buttons>
+
+    <ion-title stacked class="my-title" color="primary">
+      <div font size=1 align="center"><i>
+          <H6>Mas información</H6>
+        </i></div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <ion-title color="light">
+      <div align="center" style="font-size: 0.7rem"><strong>TransportApp 1.0</strong></div>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Origen: {{lugarOrigen}}</ion-card-subtitle>
+      <ion-card-title text-wrap>{{fechaOrigen}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Destino: {{lugarDestino}}
+      <br>
+      {{fechaDestinoDate}}
+      <br>
+      Valor: {{valor}}
+      <br>
+      Descripción: {{descripcion}}
+      <br>
+      {{
+      origen === 'usuario' :              
+        idConductor === 0 ? 'No ha sido asignado' : 'Conductor: 'idConductor              
+      ? <br>
+      }}
+      <br>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

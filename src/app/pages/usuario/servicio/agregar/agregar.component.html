@@ -1,0 +1,72 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary" menu="menuPrincipal"></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title stacked class="my-title" color="primary">
+      <div font size=1 align="center"><i>
+          <H6>Agregar Servicios</H6>
+        </i></div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <ion-title color="light">
+      <div align="center" style="font-size: 0.7rem"><strong>TransportApp 1.0</strong></div>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>
+
+<ion-content>
+
+  <form #form="ngForm" (submit)="registrar(form)">
+    <ion-list>
+
+      <ion-item>
+        <ion-label fixed>Lugar Origen</ion-label>
+        <ion-input type="text" [(ngModel)]="lugarOrigen" name="lugarOrigen" ngModel required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-datetime [(ngModel)]="fechaOrigen" name="fechaOrigen" pickerFormat="MMM-DD" ngModel required
+          placeholder="Seleccione la fecha de origen"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label fixed>Lugar Destino</ion-label>
+        <ion-input type="text" [(ngModel)]="lugarDestino" name="lugarDestino" ngModel required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-datetime [(ngModel)]="fechaDestino" name="fechaDestino" pickerFormat="MMM-DD" ngModel required
+          placeholder="Seleccione la fecha de destino"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Descripción</ion-label>
+        <ion-textarea type="text" [(ngModel)]="descripcion" name="descripcion" ngModel required></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating>Valor</ion-label>
+        <ion-input type="number" [(ngModel)]="valor" name="valor" min="50000" ngModel required></ion-input>
+        <div class="input-group-append">
+          <span class="input-group-text">CO</span>
+        </div>
+      </ion-item>
+      <br>
+      <br>
+      <div padding>
+        <ion-button size="large" expand="block" [disabled]="form.invalid" type="submit">
+          Agregar servicio
+          <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </div>      
+    </ion-list>
+  </form>
+
+</ion-content>
