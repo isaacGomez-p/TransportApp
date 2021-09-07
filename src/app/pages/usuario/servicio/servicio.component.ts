@@ -12,9 +12,14 @@ export class ServicioComponent implements OnInit {
 
   servicio: IServicio[] = []
 
+  rol: String = "";
+
   constructor(private modalController: ModalController) { }
 
-  ngOnInit() {
+  ngOnInit() {    
+  }
+
+  ionViewDidEnter(){
     this.cargarServicios()
   }
 
@@ -25,6 +30,8 @@ export class ServicioComponent implements OnInit {
       usuarios.map((itemUsuarios)=>{
         if(itemServicios.idUsuario === itemUsuarios.idUsuario){
           this.servicio.push(itemServicios)
+          this.rol = itemUsuarios.rol;            
+          console.log("rol " + this.rol);
         }
       })      
     })    
@@ -33,7 +40,7 @@ export class ServicioComponent implements OnInit {
   async masInformacion(s) {
     const modal = await this.modalController.create({
       component: MasInfoComponent,
-      cssClass: 'my-custom-class',
+      cssClass: 'my-custom-class',      
       componentProps: {
         'fechaOrigen': s.fechaOrigen,
         'fechaDestino': s.fechaDestino,
@@ -42,7 +49,8 @@ export class ServicioComponent implements OnInit {
         'lugarDestino': s.lugarDestino,
         'lugarOrigen': s.lugarOrigen,
         'idConductor': s.idConductor,
-        'estado': s.estado
+        'estado': s.estado,
+        "rol": 2
       }
     });
     return await modal.present();

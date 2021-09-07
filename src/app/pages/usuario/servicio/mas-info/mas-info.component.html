@@ -35,12 +35,13 @@
       Valor: {{valor}}
       <br>
       Descripción: {{descripcion}}
-      <br>      
-      {{ rol === 'usuario' ? 'xxxx' : 'yyyy' }}
       <br>
-      <ion-button *ngIf="rol === 'usuario' "  expand="full" (click)="aceptarServicio(idConductor)">
-        Aceptar servicio       
-      </ion-button>
+      {{ rol === 2 ? 'xxxx' : 'yyyy' }}
+      <br>
+             
+      <ion-button *ngIf="rol === 1" expand="full" (click)="aceptarServicio(idConductor)">
+        Aceptar servicio
+      </ion-button>     
       
       <br>
     </ion-card-content>

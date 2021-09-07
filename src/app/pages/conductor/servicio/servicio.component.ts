@@ -40,7 +40,7 @@ export class ServicioComponent implements OnInit {
         'lugarOrigen': s.lugarOrigen,
         'idConductor': s.idConductor,
         'estado': s.estado,
-        'rol': 'conductor'
+        'rol': 1
       }
     });
     return await modal.present();

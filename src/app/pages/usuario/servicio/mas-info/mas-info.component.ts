@@ -17,15 +17,19 @@ export class MasInfoComponent implements OnInit {
   @Input() lugarOrigen: string;
   @Input() idConductor: number;
   @Input() estado: number;
-  @Input() rol: string;
+  @Input() rol: number;
+
+  prueba: boolean = false;
 
   fechaOrigenDate: Date
   fechaDestinoDate: Date
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController) {        
+  }
 
   ngOnInit() {
     this.fechaOrigenDate = new Date(this.fechaOrigen)
     this.fechaDestinoDate = new Date(this.fechaDestino)
+    console.log("conductor: " + this.rol) 
   }
 
   dismissModal() {    
