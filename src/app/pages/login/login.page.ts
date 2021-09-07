@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuController, NavController, ToastController } from '@ionic/angular';
+import { IUsuario } from 'src/model/IUsuario';
 import { IVehiculo } from 'src/model/IVehiculo';
 import { PerfilComponent } from '../perfil/perfil.component';
 
@@ -16,8 +17,8 @@ export class LoginPage implements OnInit{
         email: null,
         password: null
     };
-
-    usuario: any = []
+    usuario: any = [];
+    
     vehiculoDato: any = {
         id: '1',
         nombre: 'Eje trasero de doble llanta y llantas pequeñas'
@@ -42,8 +43,7 @@ export class LoginPage implements OnInit{
         window.localStorage.setItem("users", JSON.stringify(usuarios))
     }
 
-    vehiculo(){
-        
+    vehiculo(){        
         let vehiculo: IVehiculo[] = [
             {
                 capacidad: '200-Kg',
@@ -59,25 +59,30 @@ export class LoginPage implements OnInit{
     login(form) {
         let usuarios = JSON.parse(window.localStorage.getItem("users"))
         let validacion = false;
-        usuarios.map((item) => {
-            if (item.usuario.toUpperCase() === form.value.user.toUpperCase() && item.contrasenia === form.value.password) {
-                this.toastConfirmacion("Bienvenido " + item.nombre, "success");
-                validacion = true;
-                this.usuario.push(
-                    {
-                        usuario: item.nombre,
-                        rol: item.rol
-                    }
-                )                
-                window.localStorage.setItem("token", item.token);
-                this.menuCtrl.enable(true, 'menuPrincipal');                
-                this.router.navigateByUrl('/perfil');
+        if(usuarios == null){            
+            this.toastConfirmacion("Credenciales incorrectas.", "danger");        
+        }else{
+            usuarios.map((item) => {
+                if (item.usuario.toUpperCase() === form.value.user.toUpperCase() && item.contrasenia === form.value.password) {
+                    this.toastConfirmacion("Bienvenido " + item.nombre, "success");
+                    validacion = true;
+                    //this.usuario.nombre = item.nombre;
+                    //this.usuario.contrasenia
+                    this.usuario.push(
+                        {
+                            usuario: item.nombre,
+                            rol: item.rol
+                        }
+                    )              
+                    window.localStorage.setItem("token", item.token);
+                    this.menuCtrl.enable(true, 'menuPrincipal');                
+                    this.router.navigateByUrl('/perfil');
+                }
+            })
+            if (validacion === false) {
+                this.toastConfirmacion("Credenciales incorrectas.", "danger");
             }
-        })
-        if (validacion === false) {
-            this.toastConfirmacion("Credenciales incorrectas.", "danger");
-        }
-
+        }        
     }
 
     async toastConfirmacion(mensaje, colorT) {

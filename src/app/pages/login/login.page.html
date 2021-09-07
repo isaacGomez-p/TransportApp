@@ -1,13 +1,13 @@
 <ion-nav>  
     <ion-footer >
-      <ion-toolbar color="light" >
+      <ion-toolbar color="dark" >
         <ion-title color="dark">
           <div class="login-title"><strong>Iniciar Sesión</strong></div>
         </ion-title>
       </ion-toolbar>
     </ion-footer>
   
-    <ion-content id="principal" color="light" padding>  
+    <ion-content id="principal" color="dark" padding>  
       <form #form="ngForm" (ngSubmit)="login(form)" class="login-form">
         <ion-grid>
           <ion-row color="primary" justify-content-center>
@@ -26,7 +26,9 @@
                 <ion-button size="large" type="submit" [disabled]="form.invalid" expand="block">Ir </ion-button>
               </div>              
               <br>
-              <a [routerLink]="['/registro']">Registrarse</a>
+              <div class="center">
+                <a [routerLink]="['/registro']">Registrarse</a>
+              </div>              
             </ion-col>
           </ion-row>
         </ion-grid>

@@ -35,12 +35,13 @@
       Valor: {{valor}}
       <br>
       Descripción: {{descripcion}}
+      <br>      
+      {{ rol === 'usuario' ? 'xxxx' : 'yyyy' }}
       <br>
-      {{
-      origen === 'usuario' :              
-        idConductor === 0 ? 'No ha sido asignado' : 'Conductor: 'idConductor              
-      ? <br>
-      }}
+      <ion-button *ngIf="rol === 'usuario' "  expand="full" (click)="aceptarServicio(idConductor)">
+        Aceptar servicio       
+      </ion-button>
+      
       <br>
     </ion-card-content>
   </ion-card>

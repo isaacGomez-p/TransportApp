@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';  
 
 @Component({
   selector: 'app-mas-info',
@@ -32,5 +33,10 @@ export class MasInfoComponent implements OnInit {
       'dismissed': true
     });
   }
+
+  aceptarServicio(idConductor:number){
+    console.log('log'+idConductor);
+  }
+
 
 }

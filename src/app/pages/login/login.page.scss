@@ -5,12 +5,13 @@
     letter-spacing: 2px;
     margin-top: 150px;
     font-weight: bold;
-    color: #ECF0F5;
+    color: #FFFFFF;
 }
 
 .login-form {
     margin-top: 50px;
     text-align: left;
+    
 }
 
 .btn-outline-primary {
@@ -35,11 +36,15 @@
 	position: absolute;
 	top: 0;
 	height: 100%;
-	transition: all 0.6s ease-in-out;
+	transition: all 0.6s ease-in-out;    
 }
 
 .sign-in-container {
 	left: 0;
 	width: 50%;
 	z-index: 2;
+}
+
+.center {
+    text-align: center;
 }

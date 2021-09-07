@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { IRol } from 'src/model/IRol';
 import { IUsuario } from 'src/model/IUsuario';
+import { UsuarioService } from 'src/app/services/usuario.service';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { IUsuario } from 'src/model/IUsuario';
     templateUrl: 'registro.page.html',
     styleUrls: ['registro.page.scss']
 })
-export class RegistroPage implements OnInit {
+export class RegistroPage implements OnInit {    
 
     nombre: string;
     correo: string;
@@ -25,7 +26,7 @@ export class RegistroPage implements OnInit {
 
     listaRoles: IRol[] = []
 
-    constructor(private toastController: ToastController, private router: Router) { }
+    constructor(private toastController: ToastController, private router: Router, private usuarioService: UsuarioService) { }
 
     ngOnInit() {
         this.listaRoles.push(
@@ -49,30 +50,36 @@ export class RegistroPage implements OnInit {
                 correo: form.value.correo.toUpperCase(),
                 estado: 1,
                 fechaNacimiento: form.value.fecha,
-                idUsuario: 0,
+                idUsuario: null,
                 nombre: form.value.nombre.toUpperCase(),
                 rol: form.value.rol,
                 telefono: form.value.telefono,
                 token: this.generaCodigo(),
                 usuario: form.value.usuario.toUpperCase()
             }
-            if(form.value.rol === "1"){                
-                window.localStorage.setItem("registroConductor", JSON.stringify(usuario))
-                this.router.navigateByUrl('/conductor');
-            }else{
-                if(window.localStorage.getItem("users") === null){
-                    let usuarios: any = []
-                    usuarios.push(usuario)
-                    window.localStorage.setItem("users", JSON.stringify(usuarios))
-                }else{
-                    let usuarios = JSON.parse(window.localStorage.getItem("users"))
-                    usuarios.push(usuario)
-                    window.localStorage.setItem("users", JSON.stringify(usuarios))
+            console.log("JSON"+ JSON.stringify(usuario));
+            this.usuarioService.postUsuario(usuario).subscribe((data) => {
+                if(form.value.rol === "1"){                
+                    window.localStorage.setItem("registroConductor", JSON.stringify(usuario))
+                    this.router.navigateByUrl('/conductor');
+                }else{                    
+                    if(window.localStorage.getItem("users") === null){
+                        let usuarios: any = []
+                        usuarios.push(usuario)
+                        window.localStorage.setItem("users", JSON.stringify(usuarios))
+                    }else{
+                        let usuarios = JSON.parse(window.localStorage.getItem("users"))
+                        usuarios.push(usuario)
+                        window.localStorage.setItem("users", JSON.stringify(usuarios))
+                    }
+                    this.toastConfirmacion("Registrado correctamente.", "success");
+                    this.resetData();
+                    this.router.navigateByUrl('/login');
                 }
-                this.toastConfirmacion("Registrado correctamente.", "success");
-                this.resetData();
-                this.router.navigateByUrl('/login');
-            }
+            },
+            (err) => {
+                this.toastConfirmacion("Por favor comprueba tu conexión a internet", "danger");
+            })          
             
         }
     }

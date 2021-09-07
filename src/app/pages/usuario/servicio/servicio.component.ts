@@ -42,8 +42,7 @@ export class ServicioComponent implements OnInit {
         'lugarDestino': s.lugarDestino,
         'lugarOrigen': s.lugarOrigen,
         'idConductor': s.idConductor,
-        'estado': s.estado,
-        'rol': 'usuario'
+        'estado': s.estado
       }
     });
     return await modal.present();
