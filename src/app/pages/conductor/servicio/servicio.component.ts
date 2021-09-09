@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { IServicio } from 'src/model/IServicio';
 import { MasInfoComponent } from '../../usuario/servicio/mas-info/mas-info.component';
@@ -12,7 +13,7 @@ export class ServicioComponent implements OnInit {
 
   servicios: IServicio[] = []
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private router: Router) { }
 
   ngOnInit() {
     this.cargarServiciosDisponibles()
@@ -28,7 +29,10 @@ export class ServicioComponent implements OnInit {
   }
 
   async detalles(s) {
-    const modal = await this.modalController.create({
+    s.rol = 1;
+    window.localStorage.setItem("servicioInfo", JSON.stringify(s));
+    this.router.navigateByUrl('/infoServicio');
+    /*const modal = await this.modalController.create({
       component: MasInfoComponent,
       cssClass: 'my-custom-class',
       componentProps: {
@@ -43,7 +47,7 @@ export class ServicioComponent implements OnInit {
         'rol': 1
       }
     });
-    return await modal.present();
+    return await modal.present();*/
   }  
 
 }

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';  
+import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-mas-info',
@@ -9,38 +8,114 @@ import { CommonModule } from '@angular/common';
 })
 export class MasInfoComponent implements OnInit {
 
-  @Input() fechaOrigen: string;
-  @Input() fechaDestino: string;
-  @Input() valor: string;
-  @Input() descripcion: string;
-  @Input() lugarDestino: string;
-  @Input() lugarOrigen: string;
-  @Input() idConductor: number;
-  @Input() estado: number;
-  @Input() rol: number;
-
+  fechaOrigen: string;
+  fechaDestino: string;
+  valor: string;
+  descripcion: string;
+  lugarDestino: string;
+  lugarOrigen: string;
+  estado: number;
+  rol: number;
+  idServicio: number;
   prueba: boolean = false;
 
-  fechaOrigenDate: Date
-  fechaDestinoDate: Date
-  constructor(private modalController: ModalController) {        
+  //Datos Conductor
+  nombreConductor: String;
+  telefonoConductor: String;
+  correoConductor: String;
+
+  constructor(private alertCtrl: AlertController, private toastController: ToastController) {
   }
 
   ngOnInit() {
-    this.fechaOrigenDate = new Date(this.fechaOrigen)
-    this.fechaDestinoDate = new Date(this.fechaDestino)
-    console.log("conductor: " + this.rol) 
+    let servicio = JSON.parse(window.localStorage.getItem("servicioInfo"));
+    this.fechaOrigen = servicio.fechaOrigen;
+    this.fechaDestino = servicio.fechaDestino;
+    this.lugarDestino = servicio.lugarDestino;
+    this.lugarOrigen = servicio.lugarOrigen;
+    this.descripcion = servicio.descripcion;
+    this.idServicio = servicio.idServicio;
+    this.estado = servicio.estado;    
+    window.localStorage.removeItem("servicioInfo")
+    this.datosUsuario();
+    if(this.estado !== 1){
+      this.datosConductor(servicio.idConductor)
+    }
   }
 
-  dismissModal() {    
-    this.modalController.dismiss({
-      'dismissed': true
+  datosConductor(conductor){
+    let usuarios = JSON.parse(window.localStorage.getItem("users"))
+    usuarios.map((item)=>{
+      if(item.idUsuario === conductor){
+        this.nombreConductor = item.nombre
+        this.telefonoConductor = item.telefono
+        this.correoConductor = item.correo
+      }
+    })
+  }
+
+
+  datosUsuario() {
+    let usuario = JSON.parse(window.localStorage.getItem("users"));
+    usuario.map((item) => {
+      if (item.token === window.localStorage.getItem("token")) {
+        this.rol = Number.parseInt(item.rol)
+      }
+    })
+  }
+
+  asignarServicio() {
+    let usuarios = JSON.parse(window.localStorage.getItem("users"));
+    usuarios.map((item) => {
+      //Busca el usuario que correspone al token
+      if (item.token === window.localStorage.getItem("token")) {
+        let servicios = JSON.parse(window.localStorage.getItem("servicios"));
+        servicios.map((itemServicios) => {
+          if (itemServicios.idServicio === this.idServicio) {
+            itemServicios.idConductor = item.idUsuario
+            itemServicios.estado = 2
+            this.toastConfirmacion("Asignado correctamente.", "success");
+          }
+        })
+        window.localStorage.setItem("servicios", JSON.stringify(servicios))
+      }
+    })
+
+  }
+
+  //Metodo de confirmacion para asignar el servicio
+  async openAlert() {
+    const alert = await this.alertCtrl.create({
+      header: '¿Desea aceptar el servicio? \n\n',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Cancel');
+          }
+        }, {
+          text: 'Confirmar',
+          handler: (data) => {
+            try {
+              this.asignarServicio();
+            } catch (Exception) {
+            }
+          }
+        }
+      ]
     });
+    await alert.present();
   }
 
-  aceptarServicio(idConductor:number){
-    console.log('log'+idConductor);
+  async toastConfirmacion(mensaje, colorT) {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      color: colorT,
+      duration: 2000
+    });
+    toast.present();
   }
-
 
 }

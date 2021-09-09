@@ -40,11 +40,12 @@ export class AgregarComponent implements OnInit {
         estado: 1,
         fechaDestino: form.value.fechaDestino,
         fechaOrigen: form.value.fechaOrigen,
-        idConductor: 0,        
+        idConductor: 0,
         idUsuario: idUsuario,
         lugarDestino: form.value.lugarDestino,
         lugarOrigen: form.value.lugarOrigen,
-        valor: form.value.valor
+        valor: form.value.valor,
+        rol: -1
       }
     )
     window.localStorage.setItem("servicios", JSON.stringify(this.servicio));
@@ -53,7 +54,7 @@ export class AgregarComponent implements OnInit {
     this.router.navigateByUrl('/servicios');
   }
 
-  resetData(){
+  resetData() {
     this.lugarOrigen = null;
     this.fechaOrigen = null;
     this.lugarDestino = null;
@@ -64,11 +65,11 @@ export class AgregarComponent implements OnInit {
 
   async toastConfirmacion(mensaje, colorT) {
     const toast = await this.toastController.create({
-        message: mensaje,
-        color: colorT,
-        duration: 2000
+      message: mensaje,
+      color: colorT,
+      duration: 2000
     });
     toast.present();
-}
+  }
 
 }

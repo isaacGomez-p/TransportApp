@@ -1,10 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="light">
-
-    <ion-buttons slot="end">
-      <ion-button (click)="dismissModal()">CERRAR</ion-button>
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary" menu="menuPrincipal"></ion-menu-button>
     </ion-buttons>
-
     <ion-title stacked class="my-title" color="primary">
       <div font size=1 align="center"><i>
           <H6>Mas información</H6>
@@ -25,26 +23,47 @@
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Origen: {{lugarOrigen}}</ion-card-subtitle>
-      <ion-card-title text-wrap>{{fechaOrigen}}</ion-card-title>
+      <ion-card-title text-wrap>{{fechaOrigen | date: 'mediumDate'}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       Destino: {{lugarDestino}}
       <br>
-      {{fechaDestinoDate}}
+      {{fechaDestino | date: 'mediumDate'}}
       <br>
       Valor: {{valor}}
       <br>
       Descripción: {{descripcion}}
       <br>
-      {{ rol === 2 ? 'xxxx' : 'yyyy' }}
-      <br>
-             
-      <ion-button *ngIf="rol === 1" expand="full" (click)="aceptarServicio(idConductor)">
-        Aceptar servicio
-      </ion-button>     
-      
+
       <br>
     </ion-card-content>
   </ion-card>
+
+  <div *ngIf=" estado === 1">
+    <ion-item-divider *ngIf="rol !== 1">
+      <ion-chip color="danger">
+        <ion-label>No ha sido asignado.</ion-label>
+      </ion-chip>
+    </ion-item-divider>
+    <ion-button *ngIf="rol === 1" expand="full" (click)="openAlert()">
+      Aceptar servicio
+    </ion-button>
+  </div>
+
+  <ion-item-divider *ngIf=" estado !== 1">
+    <ion-chip color="primary">
+      <ion-label>Datos del conductor.</ion-label>
+    </ion-chip>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-subtitle>Nombre: {{nombreConductor}}</ion-card-subtitle>        
+      </ion-card-header>
+      <ion-card-content>
+        Contácto: {{telefonoConductor}}
+        <br>
+        Correo: {{correoConductor}}        
+      </ion-card-content>
+    </ion-card>
+  </ion-item-divider>
 
 </ion-content>

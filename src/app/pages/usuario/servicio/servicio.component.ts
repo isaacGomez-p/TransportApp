@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { IServicio } from 'src/model/IServicio';
 import { MasInfoComponent } from './mas-info/mas-info.component';
@@ -14,31 +15,42 @@ export class ServicioComponent implements OnInit {
 
   rol: String = "";
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private router: Router) { }
 
-  ngOnInit() {    
+  ngOnInit() {
   }
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     this.cargarServicios()
   }
 
-  cargarServicios(){
+  cargarServicios() {
     let servicios = JSON.parse(window.localStorage.getItem("servicios"))
-    let usuarios = JSON.parse(window.localStorage.getItem("users"))     
-    servicios.map((itemServicios)=>{
-      usuarios.map((itemUsuarios)=>{
-        if(itemServicios.idUsuario === itemUsuarios.idUsuario){
-          this.servicio.push(itemServicios)
-          this.rol = itemUsuarios.rol;            
-          console.log("rol " + this.rol);
-        }
-      })      
-    })    
+    let usuarios = JSON.parse(window.localStorage.getItem("users"))
+
+    usuarios.map((item)=>{
+      if(item.token === window.localStorage.getItem("token")){
+        this.rol = item.rol;
+      }
+    })
+
+    //Agrega los servicios que corresponden al usuario
+    if (servicios !== null) {
+      servicios.map((itemServicios) => {
+        usuarios.map((itemUsuarios) => {
+          if (itemServicios.idUsuario === itemUsuarios.idUsuario) {
+            this.servicio.push(itemServicios)                        
+          }
+        })
+      })
+    }
   }
 
   async masInformacion(s) {
-    const modal = await this.modalController.create({
+    s.rol = 2;
+    window.localStorage.setItem("servicioInfo", JSON.stringify(s));
+    this.router.navigateByUrl('/infoServicio');
+    /*const modal = await this.modalController.create({
       component: MasInfoComponent,
       cssClass: 'my-custom-class',      
       componentProps: {
@@ -53,7 +65,7 @@ export class ServicioComponent implements OnInit {
         "rol": 2
       }
     });
-    return await modal.present();
+    return await modal.present();*/
   }
-  
+
 }
