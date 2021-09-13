@@ -25,7 +25,7 @@
 
   <ion-card *ngFor="let v of servicios">
     <ion-card-header>
-      <ion-card-subtitle>{{v.lugarOrigen}}</ion-card-subtitle>
+      <ion-card-subtitle>Origen: {{v.lugarOrigen}}</ion-card-subtitle>
       <ion-card-title text-wrap>{{v.fechaOrigen | date: 'mediumDate'}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -34,7 +34,12 @@
       {{v.fechaDestino | date: 'mediumDate'}}
       <br>
       <br>      
+      <ion-button color="dark" [routerLink]="['/enRuta']"> 
+        <ion-icon name="map">  </ion-icon>        
+        Ver ruta
+      </ion-button>
     </ion-card-content>
+    
   </ion-card>  
 
 </ion-content>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mis-servicios',
@@ -9,7 +10,7 @@ export class MisServiciosComponent implements OnInit {
 
   servicios: any = []
 
-  constructor() { }
+  constructor(private router : Router) { }
 
   ngOnInit() {
     this.misServicios()
@@ -33,6 +34,10 @@ export class MisServiciosComponent implements OnInit {
 
   detalles(servicio){
 
+  }
+
+  navigate(){
+    this.router.navigateByUrl('/en-ruta');
   }
 
 }
