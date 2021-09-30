@@ -58,29 +58,50 @@ export class RegistroPage implements OnInit {
                 usuario: form.value.usuario.toUpperCase()
             }
             console.log("JSON"+ JSON.stringify(usuario));
-            this.usuarioService.postUsuario(usuario).subscribe((data) => {
-                if(form.value.rol === "1"){                
-                    window.localStorage.setItem("registroConductor", JSON.stringify(usuario))
-                    this.router.navigateByUrl('/conductor');
-                }else{                    
-                    if(window.localStorage.getItem("users") === null){
-                        let usuarios: any = []
-                        usuarios.push(usuario)
-                        window.localStorage.setItem("users", JSON.stringify(usuarios))
-                    }else{
-                        let usuarios = JSON.parse(window.localStorage.getItem("users"))
-                        usuarios.push(usuario)
-                        window.localStorage.setItem("users", JSON.stringify(usuarios))
-                    }
-                    this.toastConfirmacion("Registrado correctamente.", "success");
-                    this.resetData();
-                    this.router.navigateByUrl('/login');
+            if(form.value.rol === "1"){                
+                if(window.localStorage.getItem("users") !== null){                
+                    let usuarios = JSON.parse(window.localStorage.getItem("users"))                    
+                    usuarios.map((item)=>{
+                        if(item.cedula === usuario.cedula || item.usuario === usuario.usuario){
+                            this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
+                            return;
+                        }                        
+                    })
                 }
+                window.localStorage.setItem("registroConductor", JSON.stringify(usuario))
+                this.router.navigateByUrl('/conductor');
+            }else{                
+                if(window.localStorage.getItem("users") === null){
+                    let usuarios: any = []
+                    usuario.idUsuario = 1;
+                    usuarios.push(usuario)
+                    window.localStorage.setItem("users", JSON.stringify(usuarios))
+                }else{
+                    let usuarios = JSON.parse(window.localStorage.getItem("users"))                    
+                    
+                    usuarios.map((item)=>{
+                        console.log(" ----- " + item.cedula + "  " + usuario.cedula + " - " + item.usuario + " " + usuario.usuario)
+                        if(item.cedula === usuario.cedula || item.usuario === usuario.usuario){
+                            this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
+                            return;
+                        }
+                    })
+                    usuario.idUsuario = usuarios.length+1;
+                    usuarios.push(usuario)
+                    window.localStorage.setItem("users", JSON.stringify(usuarios))
+                }                
+                this.toastConfirmacion("Registrado correctamente.", "success");
+                this.resetData();
+                this.router.navigateByUrl('/login');                
+                
+            }
+            /*this.usuarioService.postUsuario(usuario).subscribe((data) => {
+                
             },
             (err) => {
                 this.toastConfirmacion("Por favor comprueba tu conexión a internet", "danger");
             })          
-            
+            */
         }
     }
 

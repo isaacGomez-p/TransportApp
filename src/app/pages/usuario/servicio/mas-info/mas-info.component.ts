@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
@@ -24,7 +25,7 @@ export class MasInfoComponent implements OnInit {
   telefonoConductor: String;
   correoConductor: String;
 
-  constructor(private alertCtrl: AlertController, private toastController: ToastController) {
+  constructor(private alertCtrl: AlertController, private toastController: ToastController, private router: Router) {
   }
 
   ngOnInit() {
@@ -36,6 +37,7 @@ export class MasInfoComponent implements OnInit {
     this.descripcion = servicio.descripcion;
     this.idServicio = servicio.idServicio;
     this.estado = servicio.estado;    
+    this.valor = servicio.valor;
     window.localStorage.removeItem("servicioInfo")
     this.datosUsuario();
     if(this.estado !== 1){
@@ -75,6 +77,7 @@ export class MasInfoComponent implements OnInit {
             itemServicios.idConductor = item.idUsuario
             itemServicios.estado = 2
             this.toastConfirmacion("Asignado correctamente.", "success");
+            this.router.navigateByUrl('/misServicios');
           }
         })
         window.localStorage.setItem("servicios", JSON.stringify(servicios))

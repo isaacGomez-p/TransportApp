@@ -47,25 +47,43 @@ export class ConductorComponent implements OnInit {
           tipo = JSON.stringify(item)
         }
       })
+      
+      console.log("conductor: " + window.localStorage.getItem("registroConductor"))      
+      let usuario = JSON.parse(window.localStorage.getItem("registroConductor"))
+      let idUsuario = 0;
+      //Registro del usuario
+      if (window.localStorage.getItem("users") === null) {
+        let usuarios: any = []
+        usuario.idUsuario = 1;
+        idUsuario = usuario.idUsuario;
+        usuarios.push(usuario)
+        window.localStorage.setItem("users", JSON.stringify(usuarios))
+      } else {
+        let usuarios = JSON.parse(window.localStorage.getItem("users"))        
+        usuario.idUsuario = usuarios.length+1;
+        idUsuario = usuario.idUsuario;
+        usuarios.push(usuario)
+        window.localStorage.setItem("users", JSON.stringify(usuarios))
+      }
+      //Registro del vehículo
       let vehiculo: IVehiculo = {
         capacidad: form.value.capacidad,
         placa: form.value.placa.toUpperCase(),
         tipoVehiculo: tipo,
-        idUsuario: 0,
+        idUsuario: idUsuario,
         idVehiculo: 0
       }
-      console.log("conductor: " + window.localStorage.getItem("registroConductor"))
-      console.log("vehiculo: " + JSON.stringify(vehiculo))
-      let usuario = JSON.parse(window.localStorage.getItem("registroConductor"))
-      if (window.localStorage.getItem("users") === null) {
-        let usuarios: any = []
-        usuarios.push(usuario)
-        window.localStorage.setItem("users", JSON.stringify(usuarios))
+      if (window.localStorage.getItem("vehiculos") === null) {
+        let vehiculos: any = []
+        vehiculo.idVehiculo = 1;        
+        vehiculos.push(vehiculo)
+        window.localStorage.setItem("vehiculos", JSON.stringify(vehiculos))
       } else {
-        let usuarios = JSON.parse(window.localStorage.getItem("users"))
-        usuarios.push(usuario)
-        window.localStorage.setItem("users", JSON.stringify(usuarios))
-      }
+        let vehiculos = JSON.parse(window.localStorage.getItem("vehiculos"))
+        vehiculo.idVehiculo = vehiculos.length+1;        
+        vehiculos.push(vehiculo)
+        window.localStorage.setItem("vehiculos", JSON.stringify(vehiculos))
+      }      
       window.localStorage.removeItem("registroConductor")
       this.toastConfirmacion("REGISTRADO.", "success");
       this.resetData();

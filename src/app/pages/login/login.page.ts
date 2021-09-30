@@ -30,7 +30,7 @@ export class LoginPage implements OnInit{
         private toastController: ToastController) { }
 
     ngOnInit() { 
-        this.vehiculo()
+        //this.vehiculo()
     }
 
     valores(){
