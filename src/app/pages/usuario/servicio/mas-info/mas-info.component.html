@@ -50,21 +50,23 @@
     </ion-button>
   </div>
 
-  <ion-item-divider *ngIf=" estado !== 1">
-    <ion-chip color="primary">
-      <ion-label>Datos del conductor.</ion-label>
-    </ion-chip>
-    <br>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-subtitle>Nombre: {{nombreConductor}}</ion-card-subtitle>        
-      </ion-card-header>
-      <ion-card-content>
-        Contácto: {{telefonoConductor}}
-        <br>
-        Correo: {{correoConductor}}        
-      </ion-card-content>
-    </ion-card>
-  </ion-item-divider>
+  <ion-card *ngIf=" estado !== 1">
+    <ion-item-divider>     
+        <ion-label>Datos del conductor.</ion-label>
+    </ion-item-divider>
+    <ion-item-divider>    
+      <br>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Nombre: {{nombreConductor}}</ion-card-subtitle>        
+        </ion-card-header>
+        <ion-card-content>
+          Contácto: {{telefonoConductor}}
+          <br>
+          Correo: {{correoConductor}}        
+        </ion-card-content>
+      </ion-card>
+    </ion-item-divider>
+</ion-card>
 
 </ion-content>

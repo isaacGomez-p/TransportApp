@@ -21,12 +21,21 @@
   </ion-toolbar>
 </ion-footer>
 
+
 <ion-content>
   <ion-button *ngIf=" rol === '2' " expand="full" [routerLink]="['/agregarServicios']">
     Agregar servicio
     <ion-icon slot="end" name="add-circle-outline"></ion-icon>
   </ion-button>
 
+  <ion-item>
+    <ion-label>Filtrar</ion-label>
+    <ion-select [(ngModel)]="opcion" (ionChange)="filtro()">
+      <ion-select-option value="2">Asignados</ion-select-option>
+      <ion-select-option value="1">No asignados</ion-select-option>
+      <ion-select-option value="3">Entregados</ion-select-option>
+    </ion-select>
+  </ion-item>
   <ion-card *ngFor="let v of servicio">
     <ion-card-header>
       <ion-card-subtitle>{{v.lugarOrigen}}</ion-card-subtitle>
@@ -38,16 +47,29 @@
       {{v.fechaDestino | date: 'mediumDate'}}
       <br>
       <br>
+      <ion-chip *ngIf="v.estado === 2" color="warning">
+        <ion-label> Servicio asignado. </ion-label>        
+      </ion-chip>
+      <ion-chip *ngIf="v.estado === 1" color="danger">
+        <ion-label> Servicio no asignado. </ion-label>        
+      </ion-chip>
+      <ion-chip *ngIf="v.estado === 3" color="success">
+        <ion-label> Servicio entregado. </ion-label>        
+      </ion-chip>
+      <ion-button *ngIf="v.estado === 1"  expand="full" color="danger">
+        Cancelar servicio
+      </ion-button>
       <ion-button expand="full" (click)="masInformacion(v)">
         Mas información...
       </ion-button>
+      
     </ion-card-content>
   </ion-card>
   <br>
   <br>
   <div *ngIf="servicio.length === 0">
-    <ion-item-divider>
-      <ion-chip color="danger">
+    <ion-item-divider class="center">
+      <ion-chip color="danger" >
         <ion-label>No se encontraron servicios.</ion-label>
       </ion-chip>
     </ion-item-divider>

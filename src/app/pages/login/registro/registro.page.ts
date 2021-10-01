@@ -63,7 +63,7 @@ export class RegistroPage implements OnInit {
                     let usuarios = JSON.parse(window.localStorage.getItem("users"))                    
                     usuarios.map((item)=>{
                         if(item.cedula === usuario.cedula || item.usuario === usuario.usuario){
-                            this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
+                            //this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
                             return;
                         }                        
                     })
@@ -82,7 +82,7 @@ export class RegistroPage implements OnInit {
                     usuarios.map((item)=>{
                         console.log(" ----- " + item.cedula + "  " + usuario.cedula + " - " + item.usuario + " " + usuario.usuario)
                         if(item.cedula === usuario.cedula || item.usuario === usuario.usuario){
-                            this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
+                            //this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
                             return;
                         }
                     })

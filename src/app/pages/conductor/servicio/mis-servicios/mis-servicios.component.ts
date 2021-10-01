@@ -14,17 +14,21 @@ export class MisServiciosComponent implements OnInit {
   constructor(private router: Router, public alertController: AlertController) { }
 
   ngOnInit() {
+  }
+
+  ionViewDidEnter() {    
     this.misServicios()
   }
 
   misServicios(){
+    this.servicios = [];
     let usuario = JSON.parse(window.localStorage.getItem("users"))
     usuario.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){
         let servicios = JSON.parse(window.localStorage.getItem("servicios"))
         if(servicios !== null){
-          servicios.map((itemServicios)=>{
-            if(itemServicios.idConductor === item.idUsuario){
+          servicios.map((itemServicios)=>{            
+            if(itemServicios.idConductor === item.idUsuario && itemServicios.estado === 2){
               this.servicios.push(itemServicios)
             }
           })
@@ -80,15 +84,15 @@ export class MisServiciosComponent implements OnInit {
   }
 
   confirmar(s){
-    console.log("entro - " + s.estado)
     let servicio = JSON.parse(window.localStorage.getItem("servicios"));
     servicio.map((item)=>{
       if(item.idServicio === s.idServicio){
         item.estado = 3;
-        console.log(" si ")
+        item.fechaEntrega = this.horaLocalCO();
       }
     })
     window.localStorage.setItem("servicios", JSON.stringify(servicio));
+    this.misServicios();
   }
 
 }

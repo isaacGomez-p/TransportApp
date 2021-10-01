@@ -7,7 +7,7 @@
 
     <ion-title stacked class="my-title" color="primary">
       <div font size=1 align="center"><i>
-          <H6>Mis Servicios</H6>
+          <H6>Servicios Entregados</H6>
         </i></div>
     </ion-title>
   </ion-toolbar>
@@ -22,7 +22,6 @@
 </ion-footer>
 
 <ion-content>
-
   <ion-card *ngFor="let v of servicios">
     <ion-card-header>
       <ion-card-subtitle>Origen: {{v.lugarOrigen}}</ion-card-subtitle>
@@ -33,16 +32,16 @@
       <br>
       {{v.fechaDestino | date: 'mediumDate'}}
       <br>
-      <br>      
-      <ion-button color="dark" [routerLink]="['/enRuta']"> 
-        <ion-icon name="map">  </ion-icon>        
-        Ver ruta
-      </ion-button>
-      <ion-button color="dark" (click)="entrega(v)"> 
-        <ion-icon name="map">  </ion-icon>        
-        Confirmar entrega
-      </ion-button>
+      <br> 
     </ion-card-content>
+
+    <div *ngIf="servicios.length === 0">
+      <ion-item-divider>
+        <ion-chip color="danger">
+          <ion-label>No se encontraron servicios.</ion-label>
+        </ion-chip>
+      </ion-item-divider>
+    </div>
     
   </ion-card>  
 

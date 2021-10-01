@@ -45,7 +45,8 @@ export class AgregarComponent implements OnInit {
         lugarDestino: form.value.lugarDestino,
         lugarOrigen: form.value.lugarOrigen,
         valor: form.value.valor,
-        rol: -1
+        rol: -1,
+        fechaEntrega: null
       }
     )
     window.localStorage.setItem("servicios", JSON.stringify(this.servicio));

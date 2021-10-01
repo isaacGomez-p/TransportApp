@@ -46,4 +46,12 @@
     
   </ion-card>  
 
+  <div *ngIf="servicios.length === 0">
+    <ion-item-divider>
+      <ion-chip color="danger">
+        <ion-label>No se encontraron servicios.</ion-label>
+      </ion-chip>
+    </ion-item-divider>
+  </div>
+
 </ion-content>

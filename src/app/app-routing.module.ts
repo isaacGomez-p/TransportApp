@@ -14,6 +14,7 @@ const routes: Routes = [
   { path: 'infoServicio',    loadChildren: () => import('./pages/usuario/servicio/mas-info/mas-info.module').then(m => m.MasInfoComponentModule) },  
   { path: 'misServicios',    loadChildren: () => import('./pages/conductor/servicio/mis-servicios/mis-servicios.module').then(m => m.MisServicioComponentModule) }, 
   { path: 'enRuta',    loadChildren: () => import('./pages/conductor/servicio/mis-servicios/en-ruta/en-ruta.module').then(m => m.EnRutaComponentModule) },  
+  { path: 'serviciosEntregados',    loadChildren: () => import('./pages/conductor/servicio/mis-servicios/servicio-entregado/servicio-entregado.module').then(m => m.ServicioEntregadoComponentModule) },  
   
 ];
 @NgModule({

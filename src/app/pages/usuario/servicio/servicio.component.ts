@@ -12,38 +12,44 @@ import { MasInfoComponent } from './mas-info/mas-info.component';
 export class ServicioComponent implements OnInit {
 
   servicio: IServicio[] = []
+  opcion: String = '2';
 
   rol: String = "";
 
   constructor(private modalController: ModalController, private router: Router) { }
 
-  ngOnInit() {
+  ngOnInit() {    
+    
   }
 
   ionViewDidEnter() {
     this.cargarServicios()
   }
+  
+  ionViewDidChange(){
+
+  }
 
   cargarServicios() {
+    this.servicio = [];
     let servicios = JSON.parse(window.localStorage.getItem("servicios"))
     let usuarios = JSON.parse(window.localStorage.getItem("users"))
 
     usuarios.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){
         this.rol = item.rol;
+        if (servicios !== null) {
+          servicios.map((itemServicios) => {
+              if (itemServicios.idUsuario === item.idUsuario && itemServicios.estado+"" === this.opcion) {
+                this.servicio.push(itemServicios)                        
+              }
+            })
+        }
       }
     })
-
+    console.log("opp"+this.opcion);
     //Agrega los servicios que corresponden al usuario
-    if (servicios !== null) {
-      servicios.map((itemServicios) => {
-        usuarios.map((itemUsuarios) => {
-          if (itemServicios.idUsuario === itemUsuarios.idUsuario) {
-            this.servicio.push(itemServicios)                        
-          }
-        })
-      })
-    }
+    
   }
 
   async masInformacion(s) {
@@ -68,4 +74,7 @@ export class ServicioComponent implements OnInit {
     return await modal.present();*/
   }
 
+  filtro(){
+    this.cargarServicios();
+  }
 }

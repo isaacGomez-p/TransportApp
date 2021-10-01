@@ -24,14 +24,16 @@ export class VehiculoComponent implements OnInit {
     usuarios.map((item) => {
       if (item.token === window.localStorage.getItem("token")) {
         let vehiculosA = JSON.parse(window.localStorage.getItem("vehiculos"))
-        vehiculosA.map((item) => {
-          this.vehiculos.push(
-            {
-              placa: item.placa,
-              capacidad: item.capacidad,
-              tipo: JSON.parse(item.tipoVehiculo).nombre
-            }
-          )          
+        vehiculosA.map((item1) => {
+          if(item1.idUsuario === item.idUsuario){
+            this.vehiculos.push(
+              {
+                placa: item1.placa,
+                capacidad: item1.capacidad,
+                tipo: JSON.parse(item1.tipoVehiculo).nombre
+              }
+            )  
+          }                  
         })
       }
     })
