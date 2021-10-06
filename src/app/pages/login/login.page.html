@@ -1,11 +1,14 @@
-<ion-nav>  
-    <ion-footer >
-      <ion-toolbar color="dark" >
-        <ion-title color="dark">
-          <div class="login-title"><strong>Iniciar Sesión</strong></div>
-        </ion-title>
-      </ion-toolbar>
-    </ion-footer>
+<ion-nav>
+    <ion-header>
+        <div class="center">TransportApp </div>
+        
+         
+            <ion-title >
+              <div class="login-title" color="dark"><strong>Iniciar Sesión</strong></div>
+            </ion-title>
+        
+    </ion-header>  
+    
   
     <ion-content id="principal" color="dark" padding>  
       <form #form="ngForm" (ngSubmit)="login(form)" class="login-form">

@@ -1,4 +1,14 @@
 <ion-app>
+  <ion-header [translucent]="true">
+    <ion-toolbar color="dark" >  
+      <ion-title 
+        stacked class="my-title" 
+        color="warning">
+        <div font size=4 align="center"><strong>TransportApp</strong></div>
+      </ion-title>
+    </ion-toolbar>
+  
+  </ion-header>
   <ion-menu side="start" menuId="menuPrincipal" contentId="principal" >
     <ion-header [translucent]="true">
       <ion-toolbar color="primary" >
@@ -73,7 +83,7 @@
             <ion-icon name="home-outline" slot="start"></ion-icon>
             <ion-label>Mis Servicios</ion-label>
           </ion-item>
-          <ion-item routerLink="/serviciosEntregados">
+          <ion-item routerLink="/serviciosEntregados">  
             <ion-icon name="home-outline" slot="start"></ion-icon>
             <ion-label>Servicios Entregados</ion-label>
           </ion-item>
@@ -82,4 +92,13 @@
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="principal"></ion-router-outlet>
+  <ion-footer> 
+    <ion-toolbar color="dark" >  
+      <ion-title 
+        stacked class="my-title" 
+        color="warning">
+        <div font size=4 align="center"><strong>TransportApp V1.0</strong></div>
+      </ion-title>
+    </ion-toolbar>
+  </ion-footer>
 </ion-app>
