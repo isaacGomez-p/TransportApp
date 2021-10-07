@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { IServicio } from 'src/model/IServicio';
 import { MasInfoComponent } from '../../usuario/servicio/mas-info/mas-info.component';
+import { Coordenadas } from './mis-servicios/en-ruta/model/coordenadas.interface';
 
 @Component({
   selector: 'app-servicio',
@@ -13,12 +14,27 @@ export class ServicioComponent implements OnInit {
 
   servicios: IServicio[] = []
 
+  coordenadas: Coordenadas[] = [
+    {
+      lat: 4.8201714386873755, 
+      lng: -74.35533787558882
+    },
+    {
+      lat: 4.828955444542574,
+      lng: -74.35463279599456
+    },
+    {
+      lat: 4.823583280019521,
+      lng: -74.35654291912465
+    }    
+  ]
+
   constructor(private modalController: ModalController, private router: Router) { }
 
   ngOnInit() {
-    this.cargarServiciosDisponibles()
+    this.cargarServiciosDisponibles()    
   }
-
+  
   cargarServiciosDisponibles(){
     let data = JSON.parse(window.localStorage.getItem("servicios"))
     data.map((itemServicios) => {

@@ -14,6 +14,20 @@ export class ConductorComponent implements OnInit {
   rol: string;
   placa: string;
   capacidad: number;
+  tipoPeso: string;
+
+  
+  listaPesos: any[] = [
+    {
+      id: '1',
+      nombre: 'Kg'
+    },
+    {
+      id: '2',
+      nombre: 'ml'
+    }
+  ]
+
   tipoVehiculo: any[] = [
     {
       id: '1',
@@ -37,7 +51,9 @@ export class ConductorComponent implements OnInit {
     }
   ]
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.tipoPeso = "1";
+  }
 
   registrar(form) {
     if (this.validarDatos(form)) {
@@ -46,8 +62,7 @@ export class ConductorComponent implements OnInit {
         if (item.id + "" === form.value.rol + "") {
           tipo = JSON.stringify(item)
         }
-      })
-      
+      })      
       console.log("conductor: " + window.localStorage.getItem("registroConductor"))      
       let usuario = JSON.parse(window.localStorage.getItem("registroConductor"))
       let idUsuario = 0;
@@ -66,8 +81,14 @@ export class ConductorComponent implements OnInit {
         window.localStorage.setItem("users", JSON.stringify(usuarios))
       }
       //Registro del vehículo
+      let tipoPeso = "";
+      this.listaPesos.map((i)=>{
+        if(i.id === form.value.tipoPeso){
+          tipoPeso = i.nombre
+        }
+      })
       let vehiculo: IVehiculo = {
-        capacidad: form.value.capacidad,
+        capacidad: form.value.capacidad + "-" +tipoPeso,
         placa: form.value.placa.toUpperCase(),
         tipoVehiculo: tipo,
         idUsuario: idUsuario,

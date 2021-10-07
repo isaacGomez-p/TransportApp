@@ -30,7 +30,12 @@
           <ion-label fixed>Capacidad</ion-label>
           <ion-input type="number" [(ngModel)]="capacidad" name="capacidad" ngModel required></ion-input>
           <div class="input-group-append">
-            <span class="input-group-text">KG</span>
+            <ion-item>              
+              <ion-select [(ngModel)]="tipoPeso" name="tipoPeso" ngModel required>
+                  <ion-select-option *ngFor="let p of listaPesos" value="{{p.id}}">{{ p.nombre }}
+                  </ion-select-option>
+              </ion-select>
+            </ion-item>            
           </div>
         </ion-item>
 

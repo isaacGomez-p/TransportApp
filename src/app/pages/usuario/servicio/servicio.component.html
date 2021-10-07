@@ -34,6 +34,8 @@
       <ion-select-option value="2">Asignados</ion-select-option>
       <ion-select-option value="1">No asignados</ion-select-option>
       <ion-select-option value="3">Entregados</ion-select-option>
+      <ion-select-option value="4">Cancelados</ion-select-option>
+      <ion-select-option value="5">En espera</ion-select-option>
     </ion-select>
   </ion-item>
   <ion-card *ngFor="let v of servicio">
@@ -56,8 +58,14 @@
       <ion-chip *ngIf="v.estado === 3" color="success">
         <ion-label> Servicio entregado. </ion-label>        
       </ion-chip>
-      <ion-button *ngIf="v.estado === 1"  expand="full" color="danger">
+      <ion-button *ngIf="v.estado === 4 || v.estado === 5"  expand="full" color="success" (click)="alertHabilitarServicio(v)">
+        Habilitar servicio
+      </ion-button>
+      <ion-button *ngIf="v.estado === 1"  expand="full" color="danger" (click)="alertCancelarServicio(v)">
         Cancelar servicio
+      </ion-button>
+      <ion-button *ngIf="v.estado === 1"  expand="full" color="warning" (click)="alertPonerEnEsperaServicio(v)">
+        Poner en espera
       </ion-button>
       <ion-button expand="full" (click)="masInformacion(v)">
         Mas información...

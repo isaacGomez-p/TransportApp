@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { IServicio } from 'src/model/IServicio';
 import { MasInfoComponent } from './mas-info/mas-info.component';
 
@@ -13,10 +13,9 @@ export class ServicioComponent implements OnInit {
 
   servicio: IServicio[] = []
   opcion: String = '2';
-
   rol: String = "";
 
-  constructor(private modalController: ModalController, private router: Router) { }
+  constructor(private modalController: ModalController, private router: Router, public alertController: AlertController) { }
 
   ngOnInit() {    
     
@@ -50,6 +49,88 @@ export class ServicioComponent implements OnInit {
     console.log("opp"+this.opcion);
     //Agrega los servicios que corresponden al usuario
     
+  }
+
+  async alertCancelarServicio(s) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: '¿Desea eliminar?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Si',
+          handler: () => {
+            this.cambiarEstadoServicio(s, 4);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async alertPonerEnEsperaServicio(s) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: '¿Desea poner en espera el servicio?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Si',
+          handler: () => {
+            this.cambiarEstadoServicio(s, 5);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  async alertHabilitarServicio(s) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: '¿Desea habilitar el servicio?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Si',
+          handler: () => {
+            this.cambiarEstadoServicio(s, 1);
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  cambiarEstadoServicio(s, estado){    
+    this.servicio.map((i)=>{      
+      if(i.idServicio === s.idServicio){                
+        i.estado = estado;
+      }
+    })    
+    window.localStorage.setItem("servicios", JSON.stringify(this.servicio));
+    this.cargarServicios();
   }
 
   async masInformacion(s) {

@@ -31,6 +31,36 @@ export class LoginPage implements OnInit{
 
     ngOnInit() { 
         //this.vehiculo()
+        this.calcularPuntosMasCercanos();
+    }
+
+    getKilometros (lat1,lon1,lat2,lon2)
+    {    
+        var R = 6378.137; //Radio de la tierra en km
+        var dLat = this.rad( lat2 - lat1 );
+        var dLong = this.rad( lon2 - lon1 );
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(this.rad(lat1)) * Math.cos(this.rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var d = R * c;
+        
+        let resultado = d;
+        console.log("1 --- "+ resultado)
+        //return resultado;
+
+        return d.toFixed(3); //Retorna tres decimales
+    }
+
+    rad(x){
+        return x*Math.PI/180;
+    }    
+    
+    calcularPuntosMasCercanos(){        
+        let lati = 4.826796599317524
+        let long = -74.35447267704565
+        let latiDestino = 4.834617864188338
+        let longDestino = -74.25114661928522
+        this.getKilometros(lati, long, latiDestino, longDestino);
+        console.log("----------------------------")    
     }
 
     valores(){
