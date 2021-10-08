@@ -28,6 +28,15 @@
 
       <ion-item>
         <ion-label fixed>Lugar Origen</ion-label>
+        <ion-button size="large" expand="block" [disabled]="form.invalid" type="submit">
+          Seleccionar
+          <ion-icon slot="end" name="add-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-item routerLink="/ubicacion">
+          <ion-icon name="navigate-circle-outline" slot="start"></ion-icon>            
+          <ion-label>Ubicación</ion-label>
+        </ion-item>
+        <ion-label fixed> Lugar seleccionado </ion-label>  
         <ion-input type="text" [(ngModel)]="lugarOrigen" name="lugarOrigen" ngModel required></ion-input>
       </ion-item>
 
