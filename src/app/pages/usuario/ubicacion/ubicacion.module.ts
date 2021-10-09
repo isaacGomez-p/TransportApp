@@ -15,4 +15,4 @@ import { UbicacionComponentRoutingModule } from './ubicacion.routing.module';
   ],
   declarations: [UbicacionComponent]
 })
-export class AgregarComponentModule {}
+export class UbicacionComponentModule {}

@@ -7,17 +7,11 @@
 
     <ion-title stacked class="my-title" color="primary">
       <div font size=1 align="center"><i>
-          <H6>Agregar Servicios</H6>
+          <H6>Mis Servicios</H6>
         </i></div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
-
-
-<ion-content>
-  <div #map id="map"></div>
-</ion-content>
 
 <ion-footer>
   <ion-toolbar color="primary">
@@ -26,3 +20,14 @@
     </ion-title>
   </ion-toolbar>
 </ion-footer>
+
+<ion-content padding class="tab5-content">
+  <div id="map"></div>
+  <div id="indicators"></div>
+  <!--<ion-fab horizontal="end" vertical="bottom" slot="fixed" >
+    <ion-fab-button (click)="ubicacionActual()" color="warning">
+      <ion-icon name="location-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>-->
+</ion-content>
+
