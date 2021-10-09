@@ -1,7 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Coordenadas } from '../../conductor/servicio/mis-servicios/en-ruta/model/coordenadas.interface';
 import { WayPoint } from '../../conductor/servicio/mis-servicios/en-ruta/model/waypoint.interface';
+import { UbicacionModel } from './ubicacionModel';
 
 declare var google;
 
@@ -10,7 +12,7 @@ declare var google;
   templateUrl: './ubicacion.component.html',
   styleUrls: ['./ubicacion.component.scss'],
 })
-export class UbicacionComponent implements OnInit {
+export class UbicacionComponent implements OnInit, OnDestroy {
 
   map: any;
   directionsService = new google.maps.DirectionsService();
@@ -22,62 +24,117 @@ export class UbicacionComponent implements OnInit {
   wayPoint: WayPoint[];
   destination: Coordenadas;
 
-  constructor(public toastController: ToastController) { }
+  ubicacion: UbicacionModel;
 
-  ngOnInit() {
-    this.loadMap();
+  marker: any;
+  dato: string;
+
+  constructor(private activatedRoute: ActivatedRoute, 
+    public toastController: ToastController, 
+    public alertController: AlertController,
+    private router: Router){     
   }
 
-  loadMap() {
-    console.log(" 1 ")
+  ngOnInit() { }
+
+  ngOnDestroy(){
+    window.location.reload();
+  }
+
+  ionViewDidEnter() {    
+    this.dato = this.activatedRoute.snapshot.paramMap.get('dato');    
+    this.cargarDatos();
+  }
+
+  cargarDatos(){
+    if(window.localStorage.getItem("ubicacionCoordenadas")){
+      this.ubicacion = JSON.parse(window.localStorage.getItem("ubicacionCoordenadas"));      
+    }else{
+      this.ubicacion = new UbicacionModel
+    }
+    this.loadMap()
+  }
+
+  loadMap() {   
+    console.log("-- 1 ") 
     this.origin = { lat: 4.817846667527221, lng: -74.35273186860987 }
-    this.destination = { lat: 4.974102347568695, lng: -74.28949783746805 }    
-    console.log(" 2 ")
-    if(this.origin.lat !== null && this.origin.lng !== null){
-      console.log(" 3 ")
+    this.destination = { lat: 4.974102347568695, lng: -74.28949783746805 }        
+    if(this.origin.lat !== null && this.origin.lng !== null){      
       // create a new map by passing HTMLElement
-      const mapEle: HTMLElement = document.getElementById('map');    
-      const indicatorsEle: HTMLElement = document.getElementById('indicators');
+      const mapEle: HTMLElement = document.getElementById('map');      
       // create map
       this.map = new google.maps.Map(mapEle, {
         center: this.origin,
         zoom: 12
-      });
-      console.log(" 4 ")
-      this.directionsDisplay.setMap(this.map);
-      this.directionsDisplay.setPanel(indicatorsEle);
-      console.log(" 5 ")
-      google.maps.event.addListenerOnce(this.map, 'idle', () => {
-        mapEle.classList.add('show-map');
-        if(this.validacion === true){
-          console.log(" 6 ")
-          this.calculateRoute();      
-        }else{
-          this.calculateRouteWayPoints();
-        }
       });      
+      let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
+      this.addMarker(this.map, latLng)            
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
     }
   }
 
-  private calculateRouteWayPoints() {
-    this.directionsService.route({      
-      origin: this.ubicacionValidacion === false ?
-              this.origin :
-              this.location,
-      //origin: this.origin,
-      destination: this.origin,
-      waypoints : this.wayPoint,
-      optimizeWaypoints: true,          
-      travelMode: google.maps.TravelMode.DRIVING,      
-    }, (response, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.directionsDisplay.setDirections(response);
-      } else {
-        alert('Could not display directions due to: ' + status);
+  addMarker(map, position){
+    let marker = new google.maps.Marker({
+      map,
+      position,
+      draggable: true
+    })
+    marker.addListener('dragend', () => {
+      let location = {
+        lat : marker.getPosition().lat(),
+        lng : marker.getPosition().lng(),
       }
+      this.marker = location;
+
+      console.log(location)
+    })
+  }
+  
+  async ubicacionAlert() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: '¿La ubicación es correcta?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            
+          }
+        }, {
+          text: 'Confirmar',
+          handler: () => {
+            this.confirmarUbicacion();
+          }
+        }
+      ]
     });
+
+    await alert.present();
+  }
+
+  confirmarUbicacion(){
+    //Valida si ya fue ingresado las coordenadas de origen
+    if(this.dato === "Origen"){      
+      this.ubicacion.coordenadasOrigen = {
+        lat: this.marker.lat,
+        lng: this.marker.lng,
+      }
+      this.ubicacion.origen = true;
+      this.ubicacion.dato = 1;
+    }else{      
+      this.ubicacion.coordenadasDestino = {
+        lat: this.marker.lat,
+        lng: this.marker.lng,
+      }
+      this.ubicacion.destino = true;
+      this.ubicacion.dato = 2;
+    }
+    window.localStorage.setItem("ubicacionCoordenadas", JSON.stringify(this.ubicacion))
+    this.router.navigateByUrl('/agregarServicios/mapa');
   }
 
   async toastConfirmacion(mensaje, colorT) {
@@ -88,23 +145,6 @@ export class UbicacionComponent implements OnInit {
     });
     toast.present();
   }
-
-  private calculateRoute() {
-    console.log(" 7 ")
-    this.directionsService.route({
-      origin: this.ubicacionValidacion === false ?
-              this.origin :
-              this.location,
-      destination: this.destination,
-      optimizeWaypoints: true,
-      travelMode: google.maps.TravelMode.DRIVING,      
-    }, (response, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        this.directionsDisplay.setDirections(response);
-      } else {
-        alert('Could not display directions due to: ' + status);
-      }
-    });
-  }
+  
 
 }

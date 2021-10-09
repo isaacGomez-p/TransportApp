@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { IServicio } from 'src/model/IServicio';
 
@@ -17,10 +17,27 @@ export class AgregarComponent implements OnInit {
   descripcion: string;
   valor: number;
   servicio: IServicio[] = []
-  constructor(private toastController: ToastController,
+
+  constructor(private activatedRoute: ActivatedRoute,
+    private toastController: ToastController,
     private router: Router) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    
+  }
+
+  ionViewDidEnter() {   
+    if(this.activatedRoute.snapshot.paramMap.get('origen') === "mapa"){
+      this.toastConfirmacion("Seleccionado correctamente", "success")
+      let ubicacion = JSON.parse(window.localStorage.getItem("ubicacionCoordenadas"));
+      if(ubicacion.dato === 1){
+        this.lugarOrigen = JSON.stringify(ubicacion.coordenadasOrigen);
+      }else{
+        this.lugarDestino = JSON.stringify(ubicacion.coordenadasDestino);
+      }
+    }
+  }
+
 
   registrar(form) {
     let usuarios = JSON.parse(window.localStorage.getItem("users"))
