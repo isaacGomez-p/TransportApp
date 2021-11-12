@@ -95,13 +95,13 @@ export class RegistroPage implements OnInit {
                 this.router.navigateByUrl('/login');                
                 
             }
-            /*this.usuarioService.postUsuario(usuario).subscribe((data) => {
+            this.usuarioService.postUsuario(usuario).subscribe((data) => {
                 
             },
             (err) => {
                 this.toastConfirmacion("Por favor comprueba tu conexión a internet", "danger");
             })          
-            */
+            
         }
     }
 
