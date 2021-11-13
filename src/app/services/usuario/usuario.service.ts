@@ -2,8 +2,8 @@ import{ HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
-import { IUsuario } from '../../model/IUsuario';
-
+import { IUsuario } from '../../../model/IUsuario';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ import { IUsuario } from '../../model/IUsuario';
 
 export class UsuarioService {
 
-  private urlService: string = "http://190.60.254.186/Publicada/api"
+  private urlService: string = environment.url
 
   //private urlService: string = "https://localhost:44341/api";
   
@@ -25,15 +25,20 @@ export class UsuarioService {
     return this.http.post(`${this.urlService}/TRS_`, datos);
   }
 
+  login(usuario: string, clave: string): Observable<IUsuario>{
+    return this.http.get<IUsuario>(`${this.urlService}/TRS_?usuario=`+usuario+`&constrasenia=`+clave);
+  }
+
   /*putAgricultor(datos: Agricultor, id: number){
     return this.http.put(`${this.urlService}/AGD_Agricultor/`+id, datos);
   }
 
-  login(cedula: number, clave: string){
-    return this.http.get<Agricultor[]>(`${this.urlService}/AGD_Agricultor?cedula=`+cedula+`&clave=`+clave);
-  }
+  
+  */
 
-  getAllUser(idUsuario: number): Observable<Agricultor[]>{       
-    return this.http.get<Agricultor[]>(`${this.urlService}/AGD_Finca/`+idUsuario);
-  }*/
+  // Retorna todos los usuarios
+  getAllUser(): Observable<IUsuario[]>{       
+    return this.http.get<IUsuario[]>(`${this.urlService}/TRS_?idUs=0`); //Se le retonar todos los datos
+  }  
+
 }

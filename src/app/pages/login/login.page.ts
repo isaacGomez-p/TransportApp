@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuController, NavController, ToastController } from '@ionic/angular';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 import { IUsuario } from 'src/model/IUsuario';
 import { IVehiculo } from 'src/model/IVehiculo';
 import { PerfilComponent } from '../perfil/perfil.component';
@@ -27,7 +28,8 @@ export class LoginPage implements OnInit{
     constructor(private menuCtrl: MenuController, 
         public navCtrl: NavController, 
         private router: Router, 
-        private toastController: ToastController) { }
+        private toastController: ToastController,
+        private usuarioService: UsuarioService) { }
 
     ngOnInit() { 
         //this.vehiculo()
@@ -87,6 +89,21 @@ export class LoginPage implements OnInit{
     }
 
     login(form) {
+
+        this.usuarioService.login(form.value.user.toUpperCase(), form.value.password).subscribe((data)=>{
+            window.localStorage.setItem("token", data.token);
+            this.menuCtrl.enable(true, 'menuPrincipal');
+            this.router.navigateByUrl('/perfil');
+        },
+        (err) => {
+            if(err.status === 409){
+                // Error 409 cuando se repite el usuario y la contraseña
+                console.log(" error login " + JSON.stringify(err));
+                this.toastConfirmacion("Credenciales incorrectas.", "danger");
+            }            
+        }) 
+
+        /*
         let usuarios = JSON.parse(window.localStorage.getItem("users"))
         let validacion = false;
         if(usuarios == null){            
@@ -105,14 +122,14 @@ export class LoginPage implements OnInit{
                         }
                     )              
                     window.localStorage.setItem("token", item.token);
-                    this.menuCtrl.enable(true, 'menuPrincipal');                
+                    this.menuCtrl.enable(true, 'menuPrincipal');
                     this.router.navigateByUrl('/perfil');
                 }
             })
             if (validacion === false) {
                 this.toastConfirmacion("Credenciales incorrectas.", "danger");
             }
-        }        
+        }*/       
     }
 
     async toastConfirmacion(mensaje, colorT) {

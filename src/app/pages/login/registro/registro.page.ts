@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { IRol } from 'src/model/IRol';
 import { IUsuario } from 'src/model/IUsuario';
-import { UsuarioService } from 'src/app/services/usuario.service';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 
 
 @Component({
@@ -57,20 +57,39 @@ export class RegistroPage implements OnInit {
                 token: this.generaCodigo(),
                 usuario: form.value.usuario.toUpperCase()
             }
-            console.log("JSON"+ JSON.stringify(usuario));
-            if(form.value.rol === "1"){                
-                if(window.localStorage.getItem("users") !== null){                
-                    let usuarios = JSON.parse(window.localStorage.getItem("users"))                    
+
+            this.usuarioService.postUsuario(usuario).subscribe(data => {
+                //Rol 1 es conductor
+                console.log(" data " + JSON.stringify(data));
+                if(form.value.rol === "1"){
+                    window.localStorage.setItem("registroConductor", JSON.stringify(data))
+                    this.router.navigateByUrl('/conductor'); 
+                }else{
+                    //Rol 1 es conductor
+                    this.toastConfirmacion("Registrado correctamente.", "success");
+                    this.resetData();
+                    this.router.navigateByUrl('/login');
+                }
+            },
+            (err) => {
+                // Error 409 cuando se repite el usuario y la contraseña
+                console.log(" error Usuario " + JSON.stringify(err));
+                this.toastConfirmacion("Por favor comprueba tu conexión a internet", "danger");
+            }) 
+            //Rol 1 es conductor
+            /*if(form.value.rol === "1"){                                
+                if(window.localStorage.getItem("users") !== null){
+                    let usuarios = JSON.parse(window.localStorage.getItem("users"))
                     usuarios.map((item)=>{
                         if(item.cedula === usuario.cedula || item.usuario === usuario.usuario){
                             //this.toastConfirmacion("Cédula o usuario ya registrada.", "warning");
                             return;
-                        }                        
+                        }
                     })
                 }
-                window.localStorage.setItem("registroConductor", JSON.stringify(usuario))
-                this.router.navigateByUrl('/conductor');
-            }else{                
+                //window.localStorage.setItem("registroConductor", JSON.stringify(usuario))
+                //this.router.navigateByUrl('/conductor');
+            }else{ // 2 Es usuario               
                 if(window.localStorage.getItem("users") === null){
                     let usuarios: any = []
                     usuario.idUsuario = 1;
@@ -93,15 +112,15 @@ export class RegistroPage implements OnInit {
                 this.toastConfirmacion("Registrado correctamente.", "success");
                 this.resetData();
                 this.router.navigateByUrl('/login');                
-                
-            }
-            this.usuarioService.postUsuario(usuario).subscribe((data) => {
+               
+            } */
+            /*this.usuarioService.postUsuario(usuario).subscribe((data) => {
                 
             },
             (err) => {
                 this.toastConfirmacion("Por favor comprueba tu conexión a internet", "danger");
             })          
-            
+            */
         }
     }
 
@@ -119,7 +138,7 @@ export class RegistroPage implements OnInit {
         this.registro = null;
         this.fecha = null;
         this.rol = null;
-    }
+    }    
 
     /*
     Función para validar los datos del usuario al momento del registro

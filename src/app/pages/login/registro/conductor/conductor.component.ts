@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
+import { VehiculoService } from 'src/app/services/vehiculo/vehiculo.service';
 import { IVehiculo } from 'src/model/IVehiculo';
 
 @Component({
@@ -10,7 +12,11 @@ import { IVehiculo } from 'src/model/IVehiculo';
 })
 export class ConductorComponent implements OnInit {
 
-  constructor(private toastController: ToastController, private router: Router) { }
+  constructor(private toastController: ToastController, 
+    private router: Router,
+    private usuarioService: UsuarioService,
+    private vehiculoService: VehiculoService) { }
+
   rol: string;
   placa: string;
   capacidad: number;
@@ -65,9 +71,10 @@ export class ConductorComponent implements OnInit {
       })      
       console.log("conductor: " + window.localStorage.getItem("registroConductor"))      
       let usuario = JSON.parse(window.localStorage.getItem("registroConductor"))
-      let idUsuario = 0;
+      //let idUsuario = 0;
+      
       //Registro del usuario
-      if (window.localStorage.getItem("users") === null) {
+      /*if (window.localStorage.getItem("users") === null) {
         let usuarios: any = []
         usuario.idUsuario = 1;
         idUsuario = usuario.idUsuario;
@@ -79,7 +86,7 @@ export class ConductorComponent implements OnInit {
         idUsuario = usuario.idUsuario;
         usuarios.push(usuario)
         window.localStorage.setItem("users", JSON.stringify(usuarios))
-      }
+      }*/
       //Registro del vehículo
       let tipoPeso = "";
       this.listaPesos.map((i)=>{
@@ -91,10 +98,10 @@ export class ConductorComponent implements OnInit {
         capacidad: form.value.capacidad + "-" +tipoPeso,
         placa: form.value.placa.toUpperCase(),
         tipoVehiculo: tipo,
-        idUsuario: idUsuario,
+        idUsuario: usuario.id,
         idVehiculo: 0
       }
-      if (window.localStorage.getItem("vehiculos") === null) {
+      /*if (window.localStorage.getItem("vehiculos") === null) {
         let vehiculos: any = []
         vehiculo.idVehiculo = 1;        
         vehiculos.push(vehiculo)
@@ -104,11 +111,13 @@ export class ConductorComponent implements OnInit {
         vehiculo.idVehiculo = vehiculos.length+1;        
         vehiculos.push(vehiculo)
         window.localStorage.setItem("vehiculos", JSON.stringify(vehiculos))
-      }      
-      window.localStorage.removeItem("registroConductor")
-      this.toastConfirmacion("REGISTRADO.", "success");
-      this.resetData();
-      this.router.navigateByUrl('/login');
+      }*/     
+      this.vehiculoService.postVehiculo(vehiculo).subscribe((data)=>{
+        window.localStorage.removeItem("registroConductor")
+        this.toastConfirmacion("REGISTRADO.", "success");
+        this.resetData();
+        this.router.navigateByUrl('/login');
+      })      
     }
   }
 

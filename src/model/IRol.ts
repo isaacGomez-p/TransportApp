@@ -1,4 +1,4 @@
 export interface IRol {
-    idRol: number;
+    idRol: number; // 1 - Conductor, 2 - Usuario
     nombre: string;    
 }

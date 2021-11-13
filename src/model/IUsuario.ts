@@ -4,7 +4,7 @@ export interface IUsuario {
     cedula: string;
     correo: string;
     telefono: string;
-    estado: number;
+    estado: number; 
     fechaNacimiento: Date;
     rol: number;
     usuario: string;
