@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MenuController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, MenuController, NavController, ToastController } from '@ionic/angular';
 import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 import { IUsuario } from 'src/model/IUsuario';
 import { IVehiculo } from 'src/model/IVehiculo';
@@ -29,7 +29,8 @@ export class LoginPage implements OnInit{
         public navCtrl: NavController, 
         private router: Router, 
         private toastController: ToastController,
-        private usuarioService: UsuarioService) { }
+        private usuarioService: UsuarioService,
+        public alertController: AlertController) { }
 
     ngOnInit() { 
         //this.vehiculo()
@@ -91,9 +92,15 @@ export class LoginPage implements OnInit{
     login(form) {
 
         this.usuarioService.login(form.value.user.toUpperCase(), form.value.password).subscribe((data)=>{
-            window.localStorage.setItem("token", data.token);
-            this.menuCtrl.enable(true, 'menuPrincipal');
-            this.router.navigateByUrl('/perfil');
+            console.log("data login: " + JSON.stringify(data))            
+            /*if(data[1].rol === 1){
+                this.presentAlertRadio();
+            }else{*/
+                window.localStorage.setItem("token", data[0].token);
+                this.menuCtrl.enable(true, 'menuPrincipal');
+                this.router.navigateByUrl('/perfil');
+            //}
+            
         },
         (err) => {
             if(err.status === 409){
@@ -140,4 +147,172 @@ export class LoginPage implements OnInit{
         });
         toast.present();
     }
+
+    async presentAlertRadio() {
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Radio',
+          inputs: [
+            {
+              name: 'radio1',
+              type: 'radio',
+              label: 'Radio 1',
+              value: 'value1',
+              handler: () => {
+                console.log('Radio 1 selected');
+              },
+              checked: true
+            },
+            {
+              name: 'radio2',
+              type: 'radio',
+              label: 'Radio 2',
+              value: 'value2',
+              handler: () => {
+                console.log('Radio 2 selected');
+              }
+            },
+            {
+              name: 'radio3',
+              type: 'radio',
+              label: 'Radio 3',
+              value: 'value3',
+              handler: () => {
+                console.log('Radio 3 selected');
+              }
+            },
+            {
+              name: 'radio4',
+              type: 'radio',
+              label: 'Radio 4',
+              value: 'value4',
+              handler: () => {
+                console.log('Radio 4 selected');
+              }
+            },
+            {
+              name: 'radio5',
+              type: 'radio',
+              label: 'Radio 5',
+              value: 'value5',
+              handler: () => {
+                console.log('Radio 5 selected');
+              }
+            },
+            {
+              name: 'radio6',
+              type: 'radio',
+              label: 'Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 Radio 6 ',
+              value: 'value6',
+              handler: () => {
+                console.log('Radio 6 selected');
+              }
+            }
+          ],
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                console.log('Confirm Cancel');
+              }
+            }, {
+              text: 'Ok',
+              handler: () => {
+                console.log('Confirm Ok');
+              }
+            }
+          ]
+        });
+    
+        await alert.present();
+      }
+
+      async presentAlertCheckbox() {
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Checkbox',
+          inputs: [
+            {
+              name: 'checkbox1',
+              type: 'checkbox',
+              label: 'Checkbox 1',
+              value: 'value1',
+              handler: () => {
+                console.log('Checkbox 1 selected');
+              },
+              checked: true
+            },
+    
+            {
+              name: 'checkbox2',
+              type: 'checkbox',
+              label: 'Checkbox 2',
+              value: 'value2',
+              handler: () => {
+                console.log('Checkbox 2 selected');
+              }
+            },
+    
+            {
+              name: 'checkbox3',
+              type: 'checkbox',
+              label: 'Checkbox 3',
+              value: 'value3',
+              handler: () => {
+                console.log('Checkbox 3 selected');
+              }
+            },
+    
+            {
+              name: 'checkbox4',
+              type: 'checkbox',
+              label: 'Checkbox 4',
+              value: 'value4',
+              handler: () => {
+                console.log('Checkbox 4 selected');
+              }
+            },
+    
+            {
+              name: 'checkbox5',
+              type: 'checkbox',
+              label: 'Checkbox 5',
+              value: 'value5',
+              handler: () => {
+                console.log('Checkbox 5 selected');
+              }
+            },
+    
+            {
+              name: 'checkbox6',
+              type: 'checkbox',
+              label: 'Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6 Checkbox 6',
+              value: 'value6',
+              handler: () => {
+                console.log('Checkbox 6 selected');
+              }
+            }
+          ],
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                console.log('Confirm Cancel');
+              }
+            }, {
+              text: 'Ok',
+              handler: () => {
+                console.log('Confirm Ok');
+              }
+            }
+          ]
+        });
+    
+        await alert.present();
+      }
+
 }

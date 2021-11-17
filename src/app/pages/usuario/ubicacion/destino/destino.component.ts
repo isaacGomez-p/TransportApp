@@ -1,24 +1,20 @@
-import { Component, ElementRef, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
-import { Coordenadas } from '../../conductor/servicio/mis-servicios/en-ruta/model/coordenadas.interface';
-import { WayPoint } from '../../conductor/servicio/mis-servicios/en-ruta/model/waypoint.interface';
-import { UbicacionModel } from './ubicacionModel';
+import { Coordenadas } from 'src/app/pages/conductor/servicio/mis-servicios/en-ruta/model/coordenadas.interface';
+import { WayPoint } from 'src/app/pages/conductor/servicio/mis-servicios/en-ruta/model/waypoint.interface';
+import { UbicacionModel } from '../ubicacionModel';
 
 declare var google;
 
 @Component({
-  selector: 'app-ubicacion',
-  templateUrl: './ubicacion.component.html',
-  styleUrls: ['./ubicacion.component.scss'],
+  selector: 'app-destino',
+  templateUrl: './destino.component.html',
+  styleUrls: ['./destino.component.scss'],
 })
-export class UbicacionComponent implements OnInit, OnDestroy {
-
-
+export class DestinoComponent implements OnInit {
 
   map: any;
-  mapDestino: any;
-
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
   origin: Coordenadas;
@@ -33,9 +29,6 @@ export class UbicacionComponent implements OnInit, OnDestroy {
   marker: any;
   dato: string;
 
-  origen: boolean = false;
-  destino: boolean = false;
-
   constructor(private activatedRoute: ActivatedRoute, 
     public toastController: ToastController, 
     public alertController: AlertController,
@@ -46,17 +39,10 @@ export class UbicacionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     //window.location.reload();
-    const mapEle : HTMLElement = document.getElementById('map');
-    mapEle.remove()
   }
 
   ionViewDidEnter() {    
     this.dato = this.activatedRoute.snapshot.paramMap.get('dato');    
-    if(this.dato === 'Origen'){
-      this.origen = true;
-    }else{
-      this.destino = true;
-    }
     this.cargarDatos();
   }
 
@@ -70,36 +56,19 @@ export class UbicacionComponent implements OnInit, OnDestroy {
   }
 
   loadMap() {   
-    console.log("-- 1 ")
+    console.log("-- 1 destino ") 
     this.origin = { lat: 4.817846667527221, lng: -74.35273186860987 }
     this.destination = { lat: 4.974102347568695, lng: -74.28949783746805 }        
     if(this.origin.lat !== null && this.origin.lng !== null){      
-      console.log("-- ENTRO ")
-      // create a new map by passing HTMLElement      
-      if(this.dato === 'Origen'){
-        const mapEle : HTMLElement = document.getElementById('map');            
-        console.log("-- mapEle " + mapEle)
-        // create map
-        this.map = new google.maps.Map(mapEle, {
-          center: this.origin,
-          zoom: 12
-        });
-        console.log("-- map " + this.map)
-        let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-        this.addMarker(this.map, latLng)              
-      }else{
-        const mapEle : HTMLElement = document.getElementById('mapDestino');    
-        console.log("-- mapDestino " + mapEle)
-        // create map
-        this.mapDestino = new google.maps.Map(mapEle, {
-          center: this.origin,
-          zoom: 12
-        });
-        console.log("-- mapDestino " + this.mapDestino)
-        let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-        this.addMarker(this.mapDestino, latLng)      
-        
-      }              
+      // create a new map by passing HTMLElement
+      const mapEle: HTMLElement = document.getElementById('map');      
+      // create map
+      this.map = new google.maps.Map(mapEle, {
+        center: this.origin,
+        zoom: 12
+      });      
+      let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
+      this.addMarker(this.map, latLng)            
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
     }

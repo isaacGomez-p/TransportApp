@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { ServiciosService } from 'src/app/services/servicios/servicios.service';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 import { IServicio } from 'src/model/IServicio';
 
 @Component({
@@ -20,7 +22,9 @@ export class AgregarComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
-    private router: Router) { }
+    private router: Router,
+    private servicioService: ServiciosService,
+    private usuarioService: UsuarioService) { }
 
   ngOnInit() {
     
@@ -40,14 +44,36 @@ export class AgregarComponent implements OnInit {
 
 
   registrar(form) {
-    let usuarios = JSON.parse(window.localStorage.getItem("users"))
+    //let usuarios = JSON.parse(window.localStorage.getItem("users"))
     let idUsuario = 0;
-    usuarios.map((item) => {
+    /*usuarios.map((item) => {
       if (item.token === window.localStorage.getItem("token")) {
         idUsuario = item.idUsuario
       }
+    })*/
+    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
+      idUsuario = data[0].idUsuario
+      let servicio = {
+        idServicio: this.servicio.length + 1,
+        descripcion: form.value.descripcion,
+        estado: 1,
+        fechaDestino: form.value.fechaDestino,
+        fechaOrigen: form.value.fechaOrigen,
+        idConductor: 0,
+        idUsuario: idUsuario,
+        lugarDestino: form.value.lugarDestino,
+        lugarOrigen: form.value.lugarOrigen,
+        valor: form.value.valor,
+        rol: -1,
+        fechaEntrega: null
+      }
+      this.servicioService.postServicios(servicio).subscribe(res => {
+        this.toastConfirmacion("Agregado correctamente.", "success");
+        this.resetData();
+        this.router.navigateByUrl('/servicios');
+      })
     })
-    if (window.localStorage.getItem("servicios")) {
+    /*if (window.localStorage.getItem("servicios")) {
       this.servicio = JSON.parse(window.localStorage.getItem("servicios"))
     }
     this.servicio.push(
@@ -69,7 +95,7 @@ export class AgregarComponent implements OnInit {
     window.localStorage.setItem("servicios", JSON.stringify(this.servicio));
     this.toastConfirmacion("Agregado correctamente.", "success");
     this.resetData();
-    this.router.navigateByUrl('/servicios');
+    this.router.navigateByUrl('/servicios');*/
   }
 
   resetData() {

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
+import { ServiciosService } from 'src/app/services/servicios/servicios.service';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 import { IServicio } from 'src/model/IServicio';
 import { MasInfoComponent } from './mas-info/mas-info.component';
 
@@ -15,7 +17,11 @@ export class ServicioComponent implements OnInit {
   opcion: String = '2';
   rol: String = "";
 
-  constructor(private modalController: ModalController, private router: Router, public alertController: AlertController) { }
+  constructor(private modalController: ModalController, 
+    private router: Router, 
+    public alertController: AlertController,
+    private usuarioService: UsuarioService,
+    private serviciosService: ServiciosService) { }
 
   ngOnInit() {    
     
@@ -31,10 +37,17 @@ export class ServicioComponent implements OnInit {
 
   cargarServicios() {
     this.servicio = [];
-    let servicios = JSON.parse(window.localStorage.getItem("servicios"))
-    let usuarios = JSON.parse(window.localStorage.getItem("users"))
+    //let servicios = JSON.parse(window.localStorage.getItem("servicios"))
+    //let usuarios = JSON.parse(window.localStorage.getItem("users"))
 
-    usuarios.map((item)=>{
+    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
+      this.rol = data[0].rol + "";
+      this.serviciosService.getAll(data[0].idUsuario).subscribe((dataService)=>{
+        this.servicio = dataService;
+      })
+    })
+
+    /*usuarios.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){
         this.rol = item.rol;
         if (servicios !== null) {
@@ -45,7 +58,8 @@ export class ServicioComponent implements OnInit {
             })
         }
       }
-    })
+    })*/
+
     console.log("opp"+this.opcion);
     //Agrega los servicios que corresponden al usuario
     

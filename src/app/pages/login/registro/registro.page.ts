@@ -53,6 +53,7 @@ export class RegistroPage implements OnInit {
                 idUsuario: null,
                 nombre: form.value.nombre.toUpperCase(),
                 rol: form.value.rol,
+                //rol: 2,
                 telefono: form.value.telefono,
                 token: this.generaCodigo(),
                 usuario: form.value.usuario.toUpperCase()
@@ -65,7 +66,7 @@ export class RegistroPage implements OnInit {
                     window.localStorage.setItem("registroConductor", JSON.stringify(data))
                     this.router.navigateByUrl('/conductor'); 
                 }else{
-                    //Rol 1 es conductor
+                    //Rol 2 es usuario
                     this.toastConfirmacion("Registrado correctamente.", "success");
                     this.resetData();
                     this.router.navigateByUrl('/login');
