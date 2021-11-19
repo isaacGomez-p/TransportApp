@@ -30,8 +30,14 @@ export class EnRutaComponent implements OnInit {
 
   loadMap() {
     console.log(" 1 ")
-    this.origin = { lat: 4.817846667527221, lng: -74.35273186860987 }
-    this.destination = { lat: 4.974102347568695, lng: -74.28949783746805 }    
+    console.log("ruta: " + JSON.stringify(window.localStorage.getItem("ruta")))
+    let servicio = JSON.parse(window.localStorage.getItem("ruta"))
+    console.log("-- " + JSON.stringify(servicio.lugarOrigen))
+    let coordenadasO: Coordenadas = servicio.lugarOrigen;
+    let coordenadasD: Coordenadas = servicio.lugarDestino;
+    console.log("-- " + JSON.stringify(coordenadasD.lat))
+    this.origin = { lat: coordenadasO.lat, lng: coordenadasO.lng }
+    this.destination = { lat: coordenadasD.lat, lng: coordenadasD.lng }    
     console.log(" 2 ")
     if(this.origin.lat !== null && this.origin.lng !== null){
       console.log(" 3 ")
@@ -59,6 +65,7 @@ export class EnRutaComponent implements OnInit {
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
     }
+  //  window.localStorage.removeItem("ruta")
   }
 
   private calculateRouteWayPoints() {

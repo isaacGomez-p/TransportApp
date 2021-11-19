@@ -98,7 +98,7 @@ export class ConductorComponent implements OnInit {
         capacidad: form.value.capacidad + "-" +tipoPeso,
         placa: form.value.placa.toUpperCase(),
         tipoVehiculo: tipo,
-        idUsuario: usuario.id,
+        idUsuario: usuario.idUsuario,
         idVehiculo: 0
       }
       /*if (window.localStorage.getItem("vehiculos") === null) {

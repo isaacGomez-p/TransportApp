@@ -14,8 +14,10 @@ import { MasInfoComponent } from './mas-info/mas-info.component';
 export class ServicioComponent implements OnInit {
 
   servicio: IServicio[] = []
-  opcion: String = '2';
+  opcion: String = '1';
   rol: String = "";
+
+  serviciosFiltro: any = [];
 
   constructor(private modalController: ModalController, 
     private router: Router, 
@@ -43,7 +45,16 @@ export class ServicioComponent implements OnInit {
     this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
       this.rol = data[0].rol + "";
       this.serviciosService.getAll(data[0].idUsuario).subscribe((dataService)=>{
-        this.servicio = dataService;
+        if(this.opcion === '6'){
+          this.servicio = dataService;
+        }else{
+          this.serviciosFiltro = dataService;
+          this.serviciosFiltro.map((item)=>{
+            if(item.estado+"" === this.opcion)  {
+              this.servicio.push(item)
+            }
+          })
+        }                
       })
     })
 
@@ -137,13 +148,18 @@ export class ServicioComponent implements OnInit {
     await alert.present();
   }
 
-  cambiarEstadoServicio(s, estado){    
-    this.servicio.map((i)=>{      
+  cambiarEstadoServicio(s, estado){
+    s.estado = estado;
+    console.log(" - -- - " + JSON.stringify(s))
+    this.serviciosService.putServicio(s, s.idServicio).subscribe((data)=>{
+
+    })
+    /*this.servicio.map((i)=>{      
       if(i.idServicio === s.idServicio){                
         i.estado = estado;
       }
     })    
-    window.localStorage.setItem("servicios", JSON.stringify(this.servicio));
+    window.localStorage.setItem("servicios", JSON.stringify(this.servicio));*/
     this.cargarServicios();
   }
 

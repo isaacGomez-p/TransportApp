@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiciosService } from 'src/app/services/servicios/servicios.service';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 
 @Component({
   selector: 'app-mis-servicios',
@@ -11,7 +13,10 @@ export class MisServiciosComponent implements OnInit {
 
   servicios: any = []
 
-  constructor(private router: Router, public alertController: AlertController) { }
+  constructor(private router: Router, 
+    public alertController: AlertController,
+    private usuarioService: UsuarioService,
+    private serviciosService: ServiciosService) { }
 
   ngOnInit() {
   }
@@ -22,7 +27,19 @@ export class MisServiciosComponent implements OnInit {
 
   misServicios(){
     this.servicios = [];
-    let usuario = JSON.parse(window.localStorage.getItem("users"))
+    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(data => {
+      this.serviciosService.getAll(0).subscribe(dataServices => {
+        let servicios = dataServices;
+        if(servicios !== null){
+          servicios.map((itemServicios)=>{            
+            if(itemServicios.idConductor === data[0].idUsuario && itemServicios.estado === 2){
+              this.servicios.push(itemServicios)
+            }
+          })
+        }
+      })      
+    })
+   /* let usuario = JSON.parse(window.localStorage.getItem("users"))
     usuario.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){
         let servicios = JSON.parse(window.localStorage.getItem("servicios"))
@@ -34,8 +51,14 @@ export class MisServiciosComponent implements OnInit {
           })
         }
       }
-    })
+    })*/
   }
+
+  enRuta(s){
+    window.localStorage.setItem("ruta", JSON.stringify(s))
+    this.router.navigateByUrl('/enRuta');
+  }
+
 
   detalles(servicio){
 
@@ -84,15 +107,27 @@ export class MisServiciosComponent implements OnInit {
   }
 
   confirmar(s){
-    let servicio = JSON.parse(window.localStorage.getItem("servicios"));
+    this.serviciosService.getAll(0).subscribe((data)=>{
+      let servicio = data
+      servicio.map((item)=>{
+        if(item.idServicio === s.idServicio){
+          item.estado = 3;
+          item.fechaEntrega = this.horaLocalCO();
+          this.serviciosService.putServicio(item, item.idServicio).subscribe((res)=>{
+            this.misServicios();
+          })
+        }
+      })        
+    })
+    /*let servicio = JSON.parse(window.localStorage.getItem("servicios"));
     servicio.map((item)=>{
       if(item.idServicio === s.idServicio){
         item.estado = 3;
         item.fechaEntrega = this.horaLocalCO();
       }
     })
-    window.localStorage.setItem("servicios", JSON.stringify(servicio));
-    this.misServicios();
+    window.localStorage.setItem("servicios", JSON.stringify(servicio));*/
+//    this.misServicios();
   }
 
 }

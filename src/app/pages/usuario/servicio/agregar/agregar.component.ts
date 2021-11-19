@@ -31,6 +31,8 @@ export class AgregarComponent implements OnInit {
   }
 
   ionViewDidEnter() {   
+    this.lugarOrigen = '{"lat":4.826796599317524, "lng":-74.35447267704565}';
+
     if(this.activatedRoute.snapshot.paramMap.get('origen') === "mapa"){
       this.toastConfirmacion("Seleccionado correctamente", "success")
       let ubicacion = JSON.parse(window.localStorage.getItem("ubicacionCoordenadas"));
@@ -53,8 +55,8 @@ export class AgregarComponent implements OnInit {
     })*/
     this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
       idUsuario = data[0].idUsuario
-      let servicio = {
-        idServicio: this.servicio.length + 1,
+      let servicio : IServicio = {
+        idServicio: null,
         descripcion: form.value.descripcion,
         estado: 1,
         fechaDestino: form.value.fechaDestino,
@@ -63,10 +65,11 @@ export class AgregarComponent implements OnInit {
         idUsuario: idUsuario,
         lugarDestino: form.value.lugarDestino,
         lugarOrigen: form.value.lugarOrigen,
-        valor: form.value.valor,
+        valor: form.value.valor +"",
         rol: -1,
         fechaEntrega: null
       }
+      console.log("--- " + JSON.stringify(servicio))
       this.servicioService.postServicios(servicio).subscribe(res => {
         this.toastConfirmacion("Agregado correctamente.", "success");
         this.resetData();

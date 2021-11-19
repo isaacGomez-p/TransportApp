@@ -21,9 +21,9 @@ export class VehiculoService {
     return this.http.post(`${this.urlService}/TRS_?idVe=0`, datos);
   }  
 
-  // Retorna todos los vehiculos
-  getVehiculos(): Observable<IVehiculo[]>{       
-    return this.http.get<IVehiculo[]>(`${this.urlService}/TRS_?idUs=1`);
+  // Retorna los vehiculos
+  getVehiculos(id: number): Observable<IVehiculo[]>{       
+    return this.http.get<IVehiculo[]>(`${this.urlService}/TRS_?idVE=`+id);
   }  
 
 }

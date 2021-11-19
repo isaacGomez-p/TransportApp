@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+import { ServiciosService } from 'src/app/services/servicios/servicios.service';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 import { IServicio } from 'src/model/IServicio';
 import { MasInfoComponent } from '../../usuario/servicio/mas-info/mas-info.component';
 import { Coordenadas } from './mis-servicios/en-ruta/model/coordenadas.interface';
@@ -13,6 +15,8 @@ import { Coordenadas } from './mis-servicios/en-ruta/model/coordenadas.interface
 export class ServicioComponent implements OnInit {
 
   servicios: IServicio[] = []
+
+  serviciosFiltro: any = []
 
   coordenadas: Coordenadas[] = [
     {
@@ -29,19 +33,33 @@ export class ServicioComponent implements OnInit {
     }    
   ]
 
-  constructor(private modalController: ModalController, private router: Router) { }
+  constructor(private modalController: ModalController, 
+    private router: Router,
+    private usuarioService: UsuarioService,
+    private serviciosService: ServiciosService) { }
 
   ngOnInit() {
     this.cargarServiciosDisponibles()    
   }
   
   cargarServiciosDisponibles(){
-    let data = JSON.parse(window.localStorage.getItem("servicios"))
+
+    this.serviciosService.getAll(0).subscribe((dataService)=>{
+      this.serviciosFiltro = dataService;
+      this.serviciosFiltro.map((item)=>{
+        if(item.estado === 1)  {
+          this.servicios.push(item)
+        }
+      })        
+    })    
+
+    
+    /*let data = JSON.parse(window.localStorage.getItem("servicios"))
     data.map((itemServicios) => {
       if(itemServicios.estado === 1){
         this.servicios.push(itemServicios)
       }
-    })    
+    })*/    
   }
 
   async detalles(s) {

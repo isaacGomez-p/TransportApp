@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
+import { VehiculoService } from 'src/app/services/vehiculo/vehiculo.service';
 
 @Component({
   selector: 'app-vehiculo',
@@ -13,14 +15,22 @@ export class VehiculoComponent implements OnInit {
 
   vehiculos: any[] = []
 
-  constructor() { }
+  constructor(private vehiculoService: VehiculoService,
+    private usuarioService: UsuarioService) { }
 
   ngOnInit() {
     this.cargarVehiculos();
   }
 
   cargarVehiculos() {
-    let usuarios = JSON.parse(window.localStorage.getItem("users"))
+
+    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(dataUsuario => {
+      this.vehiculoService.getVehiculos(dataUsuario[0].idUsuario).subscribe(dataVehiculo => {
+        this.vehiculos = dataVehiculo
+      })
+    })
+
+    /*let usuarios = JSON.parse(window.localStorage.getItem("users"))
     usuarios.map((item) => {
       if (item.token === window.localStorage.getItem("token")) {
         let vehiculosA = JSON.parse(window.localStorage.getItem("vehiculos"))
@@ -36,6 +46,6 @@ export class VehiculoComponent implements OnInit {
           }                  
         })
       }
-    })
+    })*/
   }
 }

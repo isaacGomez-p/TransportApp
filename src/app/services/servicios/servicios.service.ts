@@ -22,12 +22,9 @@ export class ServiciosService {
     return this.http.post(`${this.urlService}/TRS_?idSer=0`, datos);
   }  
 
-  /*putAgricultor(datos: Agricultor, id: number){
-    return this.http.put(`${this.urlService}/AGD_Agricultor/`+id, datos);
+  putServicio(datos: IServicio, id: number){
+    return this.http.put(`${this.urlService}/TRS_/`+id, datos);
   }
-
-  
-  */
 
   // Retorna todos los servicios - Si envia 0 retorna todos los servicios y si se envia el id busca todos los servicios del usuario
   getAll(id: number): Observable<IServicio[]>{       

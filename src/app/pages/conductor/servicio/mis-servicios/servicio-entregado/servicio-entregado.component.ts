@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiciosService } from 'src/app/services/servicios/servicios.service';
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 
 @Component({
   selector: 'app-servicio-entregado',
@@ -11,7 +13,10 @@ export class ServicioEntregadoComponent implements OnInit {
 
   servicios: any = []
 
-  constructor(private router: Router, public alertController: AlertController) { }
+  constructor(private router: Router, 
+    public alertController: AlertController,
+    private serviciosService: ServiciosService,
+    private usuarioService: UsuarioService) { }
 
   ngOnInit() {
 
@@ -24,7 +29,19 @@ export class ServicioEntregadoComponent implements OnInit {
 
   misServicios(){
     this.servicios = [];
-    let usuario = JSON.parse(window.localStorage.getItem("users"))
+    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((dataUsuario)=>{
+      this.serviciosService.getAll(0).subscribe((dataService)=>{
+        let servicios = dataService
+        if(servicios !== null){
+          servicios.map((itemServicios)=>{
+            if(itemServicios.idConductor === dataUsuario[0].idUsuario && itemServicios.estado === 3){
+              this.servicios.push(itemServicios)
+            }
+          })
+        }
+      })
+    })
+  /*  let usuario = JSON.parse(window.localStorage.getItem("users"))
     usuario.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){
         let servicios = JSON.parse(window.localStorage.getItem("servicios"))
@@ -36,6 +53,6 @@ export class ServicioEntregadoComponent implements OnInit {
           })
         }
       }
-    })
+    })*/
   }
 }

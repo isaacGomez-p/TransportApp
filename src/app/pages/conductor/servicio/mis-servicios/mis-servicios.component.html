@@ -34,7 +34,7 @@
       {{v.fechaDestino | date: 'mediumDate'}}
       <br>
       <br>      
-      <ion-button color="dark" [routerLink]="['/enRuta']"> 
+      <ion-button color="dark" (click)="enRuta(v)"> 
         <ion-icon name="map">  </ion-icon>        
         Ver ruta
       </ion-button>

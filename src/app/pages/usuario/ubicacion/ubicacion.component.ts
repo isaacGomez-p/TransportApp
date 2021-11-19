@@ -46,8 +46,8 @@ export class UbicacionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(){
     //window.location.reload();
-    const mapEle : HTMLElement = document.getElementById('map');
-    mapEle.remove()
+    //const mapEle : HTMLElement = document.getElementById('map');
+    //mapEle.remove()
   }
 
   ionViewDidEnter() {    
@@ -76,7 +76,7 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     if(this.origin.lat !== null && this.origin.lng !== null){      
       console.log("-- ENTRO ")
       // create a new map by passing HTMLElement      
-      if(this.dato === 'Origen'){
+      //if(this.dato === 'Origen'){
         const mapEle : HTMLElement = document.getElementById('map');            
         console.log("-- mapEle " + mapEle)
         // create map
@@ -87,7 +87,7 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         console.log("-- map " + this.map)
         let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
         this.addMarker(this.map, latLng)              
-      }else{
+      /*}else{
         const mapEle : HTMLElement = document.getElementById('mapDestino');    
         console.log("-- mapDestino " + mapEle)
         // create map
@@ -99,7 +99,7 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
         this.addMarker(this.mapDestino, latLng)      
         
-      }              
+      }              */
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
     }
