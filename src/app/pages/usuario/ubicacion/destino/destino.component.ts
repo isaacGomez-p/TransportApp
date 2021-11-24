@@ -14,7 +14,7 @@ declare var google;
 })
 export class DestinoComponent implements OnInit {
 
-  map: any;
+  map2: any;
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
   origin: Coordenadas;
@@ -61,22 +61,22 @@ export class DestinoComponent implements OnInit {
     this.destination = { lat: 4.974102347568695, lng: -74.28949783746805 }        
     if(this.origin.lat !== null && this.origin.lng !== null){      
       // create a new map by passing HTMLElement
-      const mapEle: HTMLElement = document.getElementById('map');      
+      const mapEle: HTMLElement = document.getElementById('map2');      
       // create map
-      this.map = new google.maps.Map(mapEle, {
+      this.map2 = new google.maps.Map(mapEle, {
         center: this.origin,
         zoom: 12
       });      
       let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-      this.addMarker(this.map, latLng)            
+      this.addMarker(this.map2, latLng)            
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
     }
   }
 
-  addMarker(map, position){
+  addMarker(map2, position){
     let marker = new google.maps.Marker({
-      map,
+      map2,
       position,
       draggable: true
     })

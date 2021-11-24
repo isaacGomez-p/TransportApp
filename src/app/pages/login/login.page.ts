@@ -2,9 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, MenuController, NavController, ToastController } from '@ionic/angular';
 import { UsuarioService } from 'src/app/services/usuario/usuario.service';
-import { IUsuario } from 'src/model/IUsuario';
 import { IVehiculo } from 'src/model/IVehiculo';
-import { PerfilComponent } from '../perfil/perfil.component';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { interval } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { ServiciosService } from 'src/app/services/servicios/servicios.service';
+import { AnyMxRecord } from 'dns';
 
 
 @Component({
@@ -13,6 +17,9 @@ import { PerfilComponent } from '../perfil/perfil.component';
     styleUrls: ['login.page.scss']
 })
 export class LoginPage implements OnInit{
+
+  count: any;
+  a: number = 0;
 
     account: { email: string, password: string } = {
         email: null,
@@ -30,11 +37,28 @@ export class LoginPage implements OnInit{
         private router: Router, 
         private toastController: ToastController,
         private usuarioService: UsuarioService,
-        public alertController: AlertController) { }
+        public alertController: AlertController,
+        public servicioService: ServiciosService) { }
 
     ngOnInit() { 
         //this.vehiculo()
         this.calcularPuntosMasCercanos();
+        this.periodic();
+    }
+
+    periodic(){
+
+      const numbers = interval(1000);
+      
+ 
+      const takeFourNumbers = numbers.pipe(take(4));
+      interval(1000).subscribe(x => {
+        this.servicioService.getAll(0).subscribe(servicios => {
+          this.count = JSON.stringify(servicios).length;
+          this.a++;
+          console.log(JSON.stringify(servicios) + "---" + this.count + "--" + this.a);
+        })
+      })
     }
 
     getKilometros (lat1,lon1,lat2,lon2)
@@ -63,7 +87,6 @@ export class LoginPage implements OnInit{
         let latiDestino = 4.834617864188338
         let longDestino = -74.25114661928522
         this.getKilometros(lati, long, latiDestino, longDestino);
-        console.log("----------------------------")    
     }
 
     valores(){

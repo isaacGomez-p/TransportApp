@@ -70,21 +70,17 @@ export class UbicacionComponent implements OnInit, OnDestroy {
   }
 
   loadMap() {   
-    console.log("-- 1 ")
     this.origin = { lat: 4.817846667527221, lng: -74.35273186860987 }
     this.destination = { lat: 4.974102347568695, lng: -74.28949783746805 }        
     if(this.origin.lat !== null && this.origin.lng !== null){      
-      console.log("-- ENTRO ")
       // create a new map by passing HTMLElement      
       //if(this.dato === 'Origen'){
-        const mapEle : HTMLElement = document.getElementById('map');            
-        console.log("-- mapEle " + mapEle)
+        const mapEle : HTMLElement = document.getElementById('map');        
         // create map
         this.map = new google.maps.Map(mapEle, {
           center: this.origin,
           zoom: 12
         });
-        console.log("-- map " + this.map)
         let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
         this.addMarker(this.map, latLng)              
       /*}else{
