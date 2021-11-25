@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
 import { IUsuario } from '../../../model/IUsuario';
 import { environment } from '../../../environments/environment';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,11 @@ export class UsuarioService {
 
   //private urlService: string = "https://localhost:44341/api";
   
-  constructor(private http: HttpClient, public navCtrl: NavController) {    
+  constructor(private http: HttpClient, 
+    public navCtrl: NavController,
+    public geolocation: Geolocation) {
+      this.getLatitud();
+      this.getLongitud();
   }
 
   latitud: number = 0;
@@ -40,5 +45,18 @@ export class UsuarioService {
   getAllUser(token: string): Observable<IUsuario[]>{       
     return this.http.get<IUsuario[]>(`${this.urlService}/TRS_?token=`+token);
   }  
+
+  getLatitud(){
+    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+      //console.log('servicio ' + geoposition.coords.latitude);
+      this.latitud = geoposition.coords.latitude;
+    })    
+  }
+
+  getLongitud(){
+    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+      this.longitud = geoposition.coords.longitude;
+    });    
+  }
 
 }

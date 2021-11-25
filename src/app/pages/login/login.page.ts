@@ -3,12 +3,11 @@ import { Router } from '@angular/router';
 import { AlertController, MenuController, NavController, ToastController } from '@ionic/angular';
 import { UsuarioService } from 'src/app/services/usuario/usuario.service';
 import { IVehiculo } from 'src/model/IVehiculo';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { interval } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { ServiciosService } from 'src/app/services/servicios/servicios.service';
-import { AnyMxRecord } from 'dns';
+//import { of } from 'rxjs';
+//import { map } from 'rxjs/operators';
+
+
+//import { AnyMxRecord } from 'dns';
 
 
 @Component({
@@ -19,7 +18,7 @@ import { AnyMxRecord } from 'dns';
 export class LoginPage implements OnInit{
 
   count: any;
-  a: number = 0;
+  
 
     account: { email: string, password: string } = {
         email: null,
@@ -37,56 +36,11 @@ export class LoginPage implements OnInit{
         private router: Router, 
         private toastController: ToastController,
         private usuarioService: UsuarioService,
-        public alertController: AlertController,
-        public servicioService: ServiciosService) { }
+        public alertController: AlertController) { }
 
     ngOnInit() { 
-        //this.vehiculo()
-        this.calcularPuntosMasCercanos();
-        this.periodic();
-    }
-
-    periodic(){
-
-      const numbers = interval(1000);
-      
- 
-      const takeFourNumbers = numbers.pipe(take(4));
-      interval(1000).subscribe(x => {
-        this.servicioService.getAll(0).subscribe(servicios => {
-          this.count = JSON.stringify(servicios).length;
-          this.a++;
-          console.log(JSON.stringify(servicios) + "---" + this.count + "--" + this.a);
-        })
-      })
-    }
-
-    getKilometros (lat1,lon1,lat2,lon2)
-    {    
-        var R = 6378.137; //Radio de la tierra en km
-        var dLat = this.rad( lat2 - lat1 );
-        var dLong = this.rad( lon2 - lon1 );
-        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(this.rad(lat1)) * Math.cos(this.rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var d = R * c;
-        
-        let resultado = d;
-        console.log("1 --- "+ resultado)
-        //return resultado;
-
-        return d.toFixed(3); //Retorna tres decimales
-    }
-
-    rad(x){
-        return x*Math.PI/180;
-    }    
-    
-    calcularPuntosMasCercanos(){        
-        let lati = 4.826796599317524
-        let long = -74.35447267704565
-        let latiDestino = 4.834617864188338
-        let longDestino = -74.25114661928522
-        this.getKilometros(lati, long, latiDestino, longDestino);
+        //this.vehiculo()        
+     //   this.periodic();
     }
 
     valores(){

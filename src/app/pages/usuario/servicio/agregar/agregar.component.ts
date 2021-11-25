@@ -30,8 +30,8 @@ export class AgregarComponent implements OnInit {
     
   }
 
-  ionViewDidEnter() {   
-    this.lugarOrigen = '{"lat":4.826796599317524, "lng":-74.35447267704565}';
+  ionViewDidEnter() {       
+    this.lugarOrigen = '{"lat":4.603158051304789, "lng":-74.06172298627321}';
 
     if(this.activatedRoute.snapshot.paramMap.get('origen') === "mapa"){
       this.toastConfirmacion("Seleccionado correctamente", "success")

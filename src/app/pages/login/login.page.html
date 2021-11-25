@@ -14,11 +14,7 @@
       <form #form="ngForm" (ngSubmit)="login(form)" class="login-form">
         <ion-grid>
           <ion-row color="primary" justify-content-center>
-            <ion-col align-self-center size-md="6" size-lg="5" size-xs="12" >
-              <ion-content>
-                <h3> {{ count }} -- {{a}}</h3>
-              </ion-content>
-  
+            <ion-col align-self-center size-md="6" size-lg="5" size-xs="12" >              
               <div padding>                                                  
                 <ion-item>
                   <ion-input [(ngModel)]="account.email" name="user" type="text" placeholder="Usuario" ngModel required></ion-input>
