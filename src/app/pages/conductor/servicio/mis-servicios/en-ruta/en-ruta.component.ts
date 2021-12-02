@@ -16,8 +16,9 @@ export class EnRutaComponent implements OnInit {
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
   origin: Coordenadas;
-  validacion = true;
   location: Coordenadas;
+  validacion = true;
+ 
   ubicacionValidacion = false;
   wayPoint: WayPoint[];
   destination: Coordenadas;

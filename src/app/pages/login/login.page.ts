@@ -67,23 +67,26 @@ export class LoginPage implements OnInit{
     }
 
     login(form) {
-
-        this.usuarioService.login(form.value.user.toUpperCase(), form.value.password).subscribe((data)=>{
-            console.log("data login: " + JSON.stringify(data))            
+        this.usuarioService.login(form.value.user.toUpperCase(), form.value.password).subscribe((data)=>{    
             /*if(data[1].rol === 1){
                 this.presentAlertRadio();
             }else{*/
+              if(data[0] != null ){
                 window.localStorage.setItem("token", data[0].token);
                 this.menuCtrl.enable(true, 'menuPrincipal');
                 this.router.navigateByUrl('/perfil');
-            //}
-            
+              }
+              else{
+                this.toastConfirmacion("Credenciales incorrectas.", "danger");
+              }
+            //}            
         },
         (err) => {
             if(err.status === 409){
                 // Error 409 cuando se repite el usuario y la contraseña
-                console.log(" error login " + JSON.stringify(err));
-                this.toastConfirmacion("Credenciales incorrectas.", "danger");
+              this.toastConfirmacion("Credenciales incorrectas.", "danger");
+            }else{
+              this.toastConfirmacion("Por favor revise su conexión a internet.", "danger");  
             }            
         }) 
 

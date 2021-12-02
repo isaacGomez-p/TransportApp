@@ -82,7 +82,8 @@ export class UbicacionComponent implements OnInit, OnDestroy {
           zoom: 12
         });
         let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-        this.addMarker(this.map, latLng)              
+        this.addMarker(this.map, latLng);
+        this.addMarkerArrive(this.map, latLng);              
       /*}else{
         const mapEle : HTMLElement = document.getElementById('mapDestino');    
         console.log("-- mapDestino " + mapEle)
@@ -101,6 +102,35 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     }
   }
 
+  addMarkerArrive(map, position){
+    const image = {
+      url: '../../../assets/img/flag.jpg',
+      size: {
+        width: 24,
+        height: 24
+      }
+    };
+
+    let marker = new google.maps.Marker({
+      map,
+      position,
+      draggable: true,
+      animation: 'DROP',
+      icon: image
+    })
+    marker.addListener('dragend', () => {
+      let location = {
+        lat : marker.getPosition().lat(),
+        lng : marker.getPosition().lng(),
+      }
+      this.marker = location;
+      window.localStorage.setItem("arrive", JSON.stringify(location));
+      this.ubicacionAlert();
+
+      console.log("++1"+location)
+    })
+  }
+
   addMarker(map, position){
     let marker = new google.maps.Marker({
       map,
@@ -113,16 +143,67 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         lng : marker.getPosition().lng(),
       }
       this.marker = location;
+      window.localStorage.setItem("start", JSON.stringify(location));
 
-      console.log(location)
+      console.log("++2"+location)
     })
+  }
+
+  drawRoute(){
+    console.log(" 1 ")
+    console.log("ruta: " + JSON.stringify(window.localStorage.getItem("ruta")))
+    let start = JSON.parse(window.localStorage.getItem("start"));
+    let arrive = JSON.parse(window.localStorage.getItem("arrive"));
+    console.log("-- " + JSON.stringify(start))
+    console.log("--55 " + JSON.stringify(arrive))
+    let coordenadasO: Coordenadas = start;
+    let coordenadasD: Coordenadas = arrive;
+    console.log("-- " + JSON.stringify(coordenadasD.lat))
+    this.origin = { lat: coordenadasO.lat, lng: coordenadasO.lng }
+    this.destination = { lat: coordenadasD.lat, lng: coordenadasD.lng }    
+    if(this.origin.lat !== null && this.origin.lng !== null){
+      // create a new map by passing HTMLElement
+      const mapEle: HTMLElement = document.getElementById('map');    
+      const indicatorsEle: HTMLElement = document.getElementById('indicators');
+      // create map
+      this.map = new google.maps.Map(mapEle, {
+        center: this.origin,
+        zoom: 12
+      });
+      this.directionsDisplay.setMap(this.map);
+      this.directionsDisplay.setPanel(indicatorsEle);
+      google.maps.event.addListenerOnce(this.map, 'idle', () => {
+        mapEle.classList.add('show-map');
+        this.calculateRoute();        
+      });      
+    }else{
+      this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
+    }
+  }
+
+  private calculateRoute() {
+    console.log(" 7 ")
+    this.directionsService.route({
+      origin: this.ubicacionValidacion === false ?
+              this.origin :
+              this.location,
+      destination: this.destination,
+      optimizeWaypoints: true,
+      travelMode: google.maps.TravelMode.DRIVING,      
+    }, (response, status) => {
+      if (status === google.maps.DirectionsStatus.OK) {
+        this.directionsDisplay.setDirections(response);
+      } else {
+        alert('Could not display directions due to: ' + status);
+      }
+    });
   }
   
   async ubicacionAlert() {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
       header: 'Confirmación',
-      message: '¿La ubicación es correcta?',
+      message: '¿Confirmar ubicación?',
       buttons: [
         {
           text: 'Cancel',
@@ -134,6 +215,7 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         }, {
           text: 'Confirmar',
           handler: () => {
+            this.drawRoute();   
             this.confirmarUbicacion();
           }
         }
@@ -145,6 +227,12 @@ export class UbicacionComponent implements OnInit, OnDestroy {
 
   confirmarUbicacion(){
     //Valida si ya fue ingresado las coordenadas de origen
+    if(JSON.parse(window.localStorage.getItem("start")) != null){
+      console.log(JSON.parse(window.localStorage.getItem("start")));
+    }
+    if(JSON.parse(window.localStorage.getItem("start")) != null){
+      console.log(JSON.parse(window.localStorage.getItem("start")));
+    }
     if(this.dato === "Origen"){      
       this.ubicacion.coordenadasOrigen = {
         lat: this.marker.lat,

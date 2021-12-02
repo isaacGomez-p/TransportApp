@@ -26,18 +26,18 @@
   <form #form="ngForm" (submit)="registrar(form)">
     <ion-list>
 
-      <ion-item>
+      <!--<ion-item>
         <ion-label fixed>Lugar Origen</ion-label>                        
         <ion-input type="text" [(ngModel)]="lugarOrigen" name="lugarOrigen" ngModel required readonly ></ion-input>
       </ion-item>
 
-      <!--<ion-item>
+      <ion-item>
         <ion-item routerLink="/ubicacion/Origen" width="100%">
           <ion-icon name="navigate-circle-outline" slot="start"></ion-icon>            
           <ion-label>Seleccionar origen</ion-label>
         </ion-item>        
       </ion-item>
-      -->
+      
 
       <ion-item>
         <ion-datetime [(ngModel)]="fechaOrigen" name="fechaOrigen" pickerFormat="MMM-DD" ngModel required
@@ -47,18 +47,18 @@
       <ion-item>
         <ion-label fixed>Lugar Destino</ion-label>
         <ion-input type="text" [(ngModel)]="lugarDestino" name="lugarDestino" ngModel required readonly ></ion-input>
-      </ion-item>
+      </ion-item>-->
 
       <ion-item>
         <ion-item routerLink="/ubicacion/Destino" width="100%">
           <ion-icon name="navigate-circle-outline" slot="start"></ion-icon>            
-          <ion-label>Seleccionar destino</ion-label>
+          <ion-label>Seleccionar trayecto</ion-label>
         </ion-item>
       </ion-item>
-      <ion-item>
+      <!--<ion-item>
         <ion-datetime [(ngModel)]="fechaDestino" name="fechaDestino" pickerFormat="MMM-DD" ngModel required
           placeholder="Seleccione la fecha de destino"></ion-datetime>
-      </ion-item>
+      </ion-item>-->
 
       <ion-item>
         <ion-label position="floating">Descripción</ion-label>

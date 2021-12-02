@@ -97,11 +97,11 @@ export class PerfilComponent implements OnInit {
   }
 
   cargarUbicacion(){
-    //this.latitudUbicacion = this.usuarioService.latitud;
-    this.latitudUbicacion = 4.340810395398626
+    this.latitudUbicacion = this.usuarioService.latitud;
+    //this.latitudUbicacion = 4.340810395398626
     console.log("latitu: " + this.latitudUbicacion )
-    //this.longitudUbicacion = this.usuarioService.longitud;
-    this.longitudUbicacion = -74.36500114878433
+    this.longitudUbicacion = this.usuarioService.longitud;
+    //this.longitudUbicacion = -74.36500114878433
     console.log("longitud: " + this.longitudUbicacion )
   }
 
