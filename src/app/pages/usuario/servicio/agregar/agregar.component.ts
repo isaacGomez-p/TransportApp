@@ -63,8 +63,8 @@ export class AgregarComponent implements OnInit {
         fechaOrigen: form.value.fechaOrigen,
         idConductor: 0,
         idUsuario: idUsuario,
-        lugarDestino: form.value.lugarDestino,
-        lugarOrigen: form.value.lugarOrigen,
+        lugarDestino: window.localStorage.getItem("start"),
+        lugarOrigen: window.localStorage.getItem("arrive"),
         valor: form.value.valor +"",
         rol: -1,
         fechaEntrega: null

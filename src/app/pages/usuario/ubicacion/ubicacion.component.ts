@@ -14,8 +14,6 @@ declare var google;
 })
 export class UbicacionComponent implements OnInit, OnDestroy {
 
-
-
   map: any;
   mapDestino: any;
 
@@ -83,20 +81,7 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         });
         let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
         this.addMarker(this.map, latLng);
-        this.addMarkerArrive(this.map, latLng);              
-      /*}else{
-        const mapEle : HTMLElement = document.getElementById('mapDestino');    
-        console.log("-- mapDestino " + mapEle)
-        // create map
-        this.mapDestino = new google.maps.Map(mapEle, {
-          center: this.origin,
-          zoom: 12
-        });
-        console.log("-- mapDestino " + this.mapDestino)
-        let latLng = new google.maps.LatLng(this.origin.lat, this.origin.lng);
-        this.addMarker(this.mapDestino, latLng)      
-        
-      }              */
+        this.addMarkerArrive(this.map, latLng);     
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
     }
@@ -199,6 +184,10 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     });
   }
   
+  async regresar(){
+    this.confirmarUbicacion();
+  }
+
   async ubicacionAlert() {
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
@@ -215,13 +204,11 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         }, {
           text: 'Confirmar',
           handler: () => {
-            this.drawRoute();   
-            this.confirmarUbicacion();
+            this.drawRoute();
           }
         }
       ]
     });
-
     await alert.present();
   }
 

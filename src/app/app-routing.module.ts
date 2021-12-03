@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'enRuta',    loadChildren: () => import('./pages/conductor/servicio/mis-servicios/en-ruta/en-ruta.module').then(m => m.EnRutaComponentModule) },  
   { path: 'serviciosEntregados',    loadChildren: () => import('./pages/conductor/servicio/mis-servicios/servicio-entregado/servicio-entregado.module').then(m => m.ServicioEntregadoComponentModule) },  
   { path: 'ubicacion/:dato',    loadChildren: () => import('./pages/usuario/ubicacion/ubicacion.routing.module').then(m => m.UbicacionComponentRoutingModule) },  
-  { path: 'destino/:dato',    loadChildren: () => import('./pages/usuario/ubicacion/destino/destino.routing.module').then(m => m.DestinoComponentRoutingModule) },  
+  { path: 'destino/:dato',    loadChildren: () => import('./pages/conductor/mapa/destino.routing.module').then(m => m.DestinoComponentRoutingModule) },
 ];
 @NgModule({
   imports: [
