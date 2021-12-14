@@ -156,7 +156,7 @@ export class DestinoComponent implements OnInit {
       //Se habilita para mas servicios
       this.estadoEspera = false;
     })
-    this.router.navigateByUrl('/agregarServicios/mapa');
+    this.router.navigateByUrl('/misServicios');
   }
 
   async toastConfirmacion(mensaje, colorT) {
@@ -175,10 +175,8 @@ export class DestinoComponent implements OnInit {
         this.cargarUbicacion();
         this.servicioService.getAll(0).subscribe(data => {
           this.servicios = data;
-          console.log(JSON.stringify(this.servicios) + "---" + this.servicios.length + "--" );
           if(this.servicios !== undefined){
-            if(this.servicios.length !== 0){
-              console.log("------------------------")
+            if(this.servicios.length !== 0){              
               this.calcularPuntosMasCercanos();
             }
           }          

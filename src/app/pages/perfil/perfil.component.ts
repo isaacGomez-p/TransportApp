@@ -56,7 +56,6 @@ export class PerfilComponent implements OnInit {
         this.telefono = data[0].telefono
         if(data[0].rol === 1){
           this.rol = "Conductor"
-         // this.periodic();
         }else{ 
           this.rol = "Usuario"
         }
