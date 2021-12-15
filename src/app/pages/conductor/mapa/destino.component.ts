@@ -44,6 +44,7 @@ export class DestinoComponent implements OnInit {
   private alert: any;  
 
   tiempoEspera: number = 10000;
+  interval: any;
 
   constructor(private activatedRoute: ActivatedRoute, 
     public toastController: ToastController, 
@@ -57,6 +58,7 @@ export class DestinoComponent implements OnInit {
 
   ngOnDestroy(){
     //window.location.reload();
+    clearInterval(this.interval);
   }
 
   ionViewDidEnter() {    
@@ -169,7 +171,7 @@ export class DestinoComponent implements OnInit {
   }
 
   periodic(){    
-    interval(this.tiempoEspera).subscribe(x => {
+    this.interval = interval(this.tiempoEspera).subscribe(x => {
       console.log("estadoEspera -> " + this.estadoEspera)
       if(this.estadoEspera === false){      
         this.cargarUbicacion();

@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { UsuarioService } from './services/usuario/usuario.service';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { ChatComponent } from './pages/chat/chat.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -19,8 +20,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, CommonModule, FormsModule],
   providers: 
     [
-    UsuarioService, 
-    Geolocation,   
+    UsuarioService,    
+    Geolocation,    
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

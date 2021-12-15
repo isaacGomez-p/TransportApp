@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Coordenadas } from './model/coordenadas.interface';
 import { WayPoint } from './model/waypoint.interface';
-
+import { UsuarioService } from 'src/app/services/usuario/usuario.service';
+import { interval } from 'rxjs';
 declare var google;
 
 @Component({
@@ -23,20 +24,35 @@ export class EnRutaComponent implements OnInit {
   wayPoint: WayPoint[];
   destination: Coordenadas;
 
-  constructor(public toastController: ToastController) { }
+  latitudUbicacion: number;
+  longitudUbicacion: number;
+
+  interval: any;
+
+  chat: boolean = false;
+
+  constructor(public toastController: ToastController,
+  private usuarioService: UsuarioService,
+  public alertController: AlertController) { }
 
   ngOnInit() {
     this.loadMap();
   }
 
+ ngOnDestroy(){
+    //window.location.reload();
+    clearInterval(this.interval);
+  }
+
   loadMap() {
-    console.log(" 1 ")
+    console.log(" ruta ---------- ")
     console.log("ruta: " + JSON.stringify(window.localStorage.getItem("ruta")))
     let servicio = JSON.parse(window.localStorage.getItem("ruta"))
-    console.log("-- " + JSON.stringify(servicio.lugarOrigen))
-    let coordenadasO: Coordenadas = servicio.lugarOrigen;
-    let coordenadasD: Coordenadas = servicio.lugarDestino;
-    console.log("-- " + JSON.stringify(coordenadasD.lat))
+    console.log("--lugarOrigen ->  " + JSON.stringify(servicio.lugarOrigen))
+    console.log("--lugarDestino -> " + JSON.stringify(servicio.lugarDestino))
+    let coordenadasO: Coordenadas = JSON.parse(servicio.lugarOrigen);
+    let coordenadasD: Coordenadas = JSON.parse(servicio.lugarDestino);
+    console.log("-- " + coordenadasD.lng)
     this.origin = { lat: coordenadasO.lat, lng: coordenadasO.lng }
     this.destination = { lat: coordenadasD.lat, lng: coordenadasD.lng }    
     console.log(" 2 ")
@@ -61,7 +77,8 @@ export class EnRutaComponent implements OnInit {
           this.calculateRoute();      
         }else{
           this.calculateRouteWayPoints();
-        }
+        }        
+        this.cargarUbicacion();
       });      
     }else{
       this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
@@ -113,6 +130,87 @@ export class EnRutaComponent implements OnInit {
         alert('Could not display directions due to: ' + status);
       }
     });
+  }
+
+  abrirChat(){
+    this.chat = !this.chat;
+  }
+
+  async cargarUbicacion(){
+    this.interval = interval(5000).subscribe(x => {
+      //console.log("idInterval -> " + JSON.stringify(this.interval))
+      console.log("calculando ubicacion --- en ruta")
+      this.cargarCoordenadas();
+      this.addMarkerArrive(this.map, this.origin)
+    });        
+  }
+
+  async terminarRecorrido() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Confirmación',
+      message: '¿Desea terminar el servicio?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            
+          }
+        }, {
+          text: 'Confirmar',
+          handler: () => {
+            console.log("terminar --- ");
+            clearInterval(this.interval);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  } 
+
+  //Añadir marcador de ubicacion actual del taxista
+  addMarkerArrive(map, position){
+    const image = {
+      url: '../../../assets/img/taxi.png',
+      size: {
+        width: 24,
+        height: 24
+      }
+    };
+
+    let marker = new google.maps.Marker({
+      map,
+      position,
+      draggable: true,
+      animation: 'DROP',
+      icon: image
+    })
+    marker.addListener('dragend', () => {
+      let location = {
+        lat : marker.getPosition().lat(),
+        lng : marker.getPosition().lng(),
+      }
+      //this.marker = location;
+      //window.localStorage.setItem("arrive", JSON.stringify(location));
+      
+
+      console.log("++1"+location)
+    })
+  }
+
+  async cargarCoordenadas(){
+    this.origin = { lat: this.usuarioService.latitud, lng: this.usuarioService.longitud }
+    this.latitudUbicacion = this.origin.lat;
+    this.longitudUbicacion = this.origin.lng;
+    //this.latitudUbicacion = this.usuarioService.latitud;
+    //this.latitudUbicacion = 4.340810395398626
+    console.log("latitu: " + this.origin.lat )
+    //this.longitudUbicacion = this.usuarioService.longitud;
+    //this.longitudUbicacion = -74.36500114878433
+    console.log("longitud: " + this.origin.lng )
   }
 
 }

@@ -22,8 +22,25 @@
 </ion-footer>
 
 <ion-content padding class="tab5-content">
-  <div id="map"></div>
-  <div id="indicators"></div>
+  <div *ngIf="!chat">
+    <div id="map"></div>
+    <div id="indicators"></div>
+  </div>
+  
+
+  <ion-fab horizontal="end" vertical="top" slot="fixed">
+    <ion-fab-button color="light" (click)="terminarRecorrido()">
+      <ion-icon md="caret-back" ios="chevron-back-circle-outline"></ion-icon>
+    </ion-fab-button>    
+    <ion-fab-button color="light" (click)="abrirChat()">
+      <ion-icon md="caret-back" ios="chevron-back-circle-outline"></ion-icon>
+    </ion-fab-button>  
+  </ion-fab> 
+
+  <div *ngIf="chat"> 
+    <app-chat></app-chat>
+  </div>
+
   <!--<ion-fab horizontal="end" vertical="bottom" slot="fixed" >
     <ion-fab-button (click)="ubicacionActual()" color="warning">
       <ion-icon name="location-outline"></ion-icon>
