@@ -43,29 +43,6 @@ export class LoginPage implements OnInit{
      //   this.periodic();
     }
 
-    valores(){
-        let usuarios = JSON.parse(window.localStorage.getItem("users"))
-        let cont = 1;
-        usuarios.map((item)=>{
-            item.idUsuario = cont;
-            cont++;
-        })        
-        window.localStorage.setItem("users", JSON.stringify(usuarios))
-    }
-
-    vehiculo(){        
-        let vehiculo: IVehiculo[] = [
-            {
-                capacidad: '200-Kg',
-                idUsuario: 3,
-                idVehiculo: 1,
-                placa: 'ASD123',
-                tipoVehiculo: JSON.stringify(this.vehiculoDato)
-            }
-        ]
-        window.localStorage.setItem("vehiculos", JSON.stringify(vehiculo))
-    }
-
     login(form) {
         this.usuarioService.login(form.value.user.toUpperCase(), form.value.password).subscribe((data)=>{    
             /*if(data[1].rol === 1){
@@ -73,6 +50,7 @@ export class LoginPage implements OnInit{
             }else{*/
               if(data[0] != null ){
                 window.localStorage.setItem("token", data[0].token);
+                window.localStorage.setItem("user", JSON.stringify(data[0]));
                 this.menuCtrl.enable(true, 'menuPrincipal');
                 this.router.navigateByUrl('/perfil');
               }
