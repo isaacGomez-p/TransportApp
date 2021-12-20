@@ -1,0 +1,6 @@
+{
+	"appId": "com.transport.v1",
+	"appName": "TransportApp",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}

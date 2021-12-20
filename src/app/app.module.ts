@@ -14,10 +14,14 @@ import { UsuarioService } from './services/usuario/usuario.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { ChatComponent } from './pages/chat/chat.component';
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+const config: SocketIoConfig = { url: 'http://localhost:3001', options: { transports : ['websocket'] } };
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, CommonModule, FormsModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, CommonModule,
+     FormsModule, SocketIoModule.forRoot(config)],
   providers: 
     [
     UsuarioService,    
