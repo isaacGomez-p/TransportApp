@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { ChatComponent } from './chat.component';
 
 import { ChatComponentRoutingModule } from './chat.routing.module';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
+    BrowserModule,
     FormsModule,    
-    ChatComponentRoutingModule
+    ChatComponentRoutingModule    
   ],
   exports:[ChatComponent],
   declarations: [ChatComponent]  

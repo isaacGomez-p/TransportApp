@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  url: 'http://190.60.254.186/Publicada/api'
+  url: 'http://190.60.254.186/Publicada/api',
+  SOCKET_ENDPOINT: 'http://localhost:3001'
 };
 
 /*

@@ -1,7 +1,7 @@
 import{ HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { NavController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 import { IUsuario } from '../../../model/IUsuario';
 import { environment } from '../../../environments/environment';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
@@ -18,7 +18,8 @@ export class UsuarioService {
   
   constructor(private http: HttpClient, 
     public navCtrl: NavController,
-    public geolocation: Geolocation) {
+    public geolocation: Geolocation,
+    private toastController: ToastController) {
       this.getLatitud();
       this.getLongitud();
   }
@@ -49,14 +50,24 @@ export class UsuarioService {
   getLatitud(){
     this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
       //console.log('servicio ' + geoposition.coords.latitude);
-      this.latitud = geoposition.coords.latitude;
+      this.latitud = geoposition.coords.latitude;      
     })    
   }
 
   getLongitud(){
     this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
       this.longitud = geoposition.coords.longitude;
+      this.toastConfirmacion(this.latitud + " " + this.longitud, "success");
     });    
   }
+
+  async toastConfirmacion(mensaje, colorT) {
+    const toast = await this.toastController.create({
+        message: mensaje,
+        color: colorT,
+        duration: 2000
+    });
+    toast.present();
+}
 
 }

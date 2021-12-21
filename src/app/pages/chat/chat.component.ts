@@ -5,6 +5,7 @@ import { ToastController } from '@ionic/angular';
 import { TalkService } from '../../services/talk/talk.service';
 import Talk from 'talkjs';
 import { IUsuario } from 'src/model/IUsuario';
+import { SocketioService } from 'src/app/services/socket/socketio.service';
 
 @Component({
   selector: 'app-chat',
@@ -16,12 +17,14 @@ export class ChatComponent implements OnInit {
   message = '';
   messages = [];
   currentUser = '';
-
-  constructor(private socket: Socket, private toastCtrl: ToastController) {}
+  sala: string;
+  constructor(private socket: Socket, 
+    private toastCtrl: ToastController,
+    private socketService: SocketioService) {}
 
   ngOnInit() {
 
-    this.socket.connect();
+    /*this.socket.connect();
  
     let name = `user-${new Date().getTime()}`;
     this.currentUser = name;
@@ -30,6 +33,7 @@ export class ChatComponent implements OnInit {
  
     this.socket.fromEvent('users-changed').subscribe(data => {
       let user = data['user'];
+      console.log("---------------- chat --> " + JSON.stringify(data))
       if (data['event'] === 'left') {
         this.showToast('User left: ' + user);
       } else {
@@ -38,12 +42,39 @@ export class ChatComponent implements OnInit {
     });
  
     this.socket.fromEvent('message').subscribe(message => {
+      console.log("---------------- message --> " + JSON.stringify(message))
       this.messages.push(message);
     });
-    
+    */
   }
 
-  sendMessage() {
+  CHAT_ROOM = "1234";  
+  
+  submitToken() {
+    const token = '123';
+    if (token) {
+      this.socketService.setupSocketConnection(token);
+      // add this line to handle incoming messages
+      console.log("NEW MESSAGE 1 " + this.CHAT_ROOM);
+      this.socketService.subscribeToMessages((err, data) => {
+        console.log("NEW MESSAGE ", data);
+      });
+    }
+  }
+  
+  submitMessage() {
+    console.log("}}} " +this.message)
+    const message = this.message;
+    console.log("____ sala  -> " + this.CHAT_ROOM + " - - " + message)
+    if (message) {
+      console.log(" +++++ ");
+      this.socketService.sendMessage({message, roomName: this.CHAT_ROOM}, cb => {
+        console.log("!!!!!!! ", cb);
+      });
+    }
+  }
+
+  /*sendMessage() {
     this.socket.emit('send-message', { text: this.message });
     this.message = '';
   }
@@ -59,7 +90,7 @@ export class ChatComponent implements OnInit {
     });
     toast.present();
   }
- 
+
 
   /*private inbox: Talk.Inbox;
   private session: Talk.Session;
