@@ -18,21 +18,6 @@ export class ServicioComponent implements OnInit {
 
   serviciosFiltro: any = []
 
-  coordenadas: Coordenadas[] = [
-    {
-      lat: 4.8201714386873755, 
-      lng: -74.35533787558882
-    },
-    {
-      lat: 4.828955444542574,
-      lng: -74.35463279599456
-    },
-    {
-      lat: 4.823583280019521,
-      lng: -74.35654291912465
-    }    
-  ]
-
   constructor(private modalController: ModalController, 
     private router: Router,
     private usuarioService: UsuarioService,

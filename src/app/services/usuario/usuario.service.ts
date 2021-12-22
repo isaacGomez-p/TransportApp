@@ -13,15 +13,55 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 export class UsuarioService {
 
   private urlService: string = environment.url
-
+  private contadorLatitud = 0;
+  private contadorLongitud = 0;
+  private confirmacionUbicacion = 0;
   //private urlService: string = "https://localhost:44341/api";
-  
+  private pruebas: boolean = true;
   constructor(private http: HttpClient, 
     public navCtrl: NavController,
     public geolocation: Geolocation,
-    private toastController: ToastController) {
-      this.getLatitud();
+    private toastController: ToastController) {      
       this.getLongitud();
+      this.getLatitud();
+  }
+
+  validarLatitud(){    
+    console.log("----- service: latitud -> " + this.latitud)
+    if(this.latitud === 0){
+      
+      console.log("----- ")         
+      this.contadorLatitud++;
+      if(this.pruebas){
+        this.toastConfirmacion("this.contadorLatitud -> " + this.contadorLatitud, "danger");
+      }
+      console.log("----- contador -> " + this.contadorLatitud)    
+      this.getLatitud();        
+    }else{
+      this.validarUbicacion();
+    }
+  }
+
+  validarUbicacion(){
+    if(this.latitud !== 0 && this.longitud !== 0){
+      this.toastConfirmacion(this.latitud + " " + this.longitud, "success");
+    }
+  }
+
+  validarLongitud(){
+    console.log("----- service: longitud -> " + this.longitud)    
+    if(this.longitud === 0){    
+      console.log("----- ")           
+      this.getLongitud();        
+      this.contadorLongitud++;
+      if(this.pruebas){
+        this.toastConfirmacion("this.contadorLongitud -> " + this.contadorLongitud, "danger");
+      }
+      
+      console.log("----- contador -> " + this.contadorLongitud)
+    }else{
+      this.validarUbicacion();
+    }
   }
 
   latitud: number = 0;
@@ -48,17 +88,26 @@ export class UsuarioService {
   }  
 
   getLatitud(){
-    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
-      //console.log('servicio ' + geoposition.coords.latitude);
-      this.latitud = geoposition.coords.latitude;      
-    })    
+    if(this.contadorLatitud === 5){              
+      this.toastConfirmacion("Error con la latitud.", "danger");
+    }else{    
+      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{      
+        this.latitud = geoposition.coords.latitude;      
+        console.log('this.latitud ' + this.latitud);
+      })    
+    }
   }
 
   getLongitud(){
-    this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
-      this.longitud = geoposition.coords.longitude;
-      this.toastConfirmacion(this.latitud + " " + this.longitud, "success");
-    });    
+    if(this.contadorLongitud === 5){              
+      this.toastConfirmacion("Error con la longitud.", "danger");
+    }else{   
+      this.geolocation.getCurrentPosition().then((geoposition: Geoposition)=>{
+        this.longitud = geoposition.coords.longitude;
+        console.log('this.longitud ' + this.longitud);
+        this.validarLongitud();
+      });    
+    }
   }
 
   async toastConfirmacion(mensaje, colorT) {

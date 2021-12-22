@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="light">
+  <ion-toolbar color="light">    
 
     <ion-buttons slot="start">
       <ion-menu-button color="primary" menu="menuPrincipal"></ion-menu-button>
@@ -28,9 +28,15 @@
   <div #mapDestino id="mapDestino"></div>
 
   <ion-fab horizontal="end" vertical="top" slot="fixed">
-    <ion-fab-button color="light" (click)="regresar()">
-      <ion-icon md="caret-back" ios="chevron-back-circle-outline"></ion-icon>
+    <ion-fab-button color="dark">
+      <ion-icon ios="apps-outline"></ion-icon>
     </ion-fab-button>    
+    <ion-fab-list side="bottom">
+      <ion-fab-button (click)="regresarEvento()"><ion-icon name="arrow-back-circle-outline"></ion-icon></ion-fab-button>
+    </ion-fab-list>
+    <ion-fab-list side="start">
+      <ion-fab-button color="success" (click)="ubicacionAlert()"><ion-icon name="checkmark-outline"></ion-icon></ion-fab-button>
+    </ion-fab-list>    
   </ion-fab>
 
 

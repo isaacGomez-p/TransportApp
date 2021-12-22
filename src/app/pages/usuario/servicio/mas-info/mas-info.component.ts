@@ -52,14 +52,17 @@ export class MasInfoComponent implements OnInit {
   }
 
   datosConductor(conductor){
-    let usuarios = JSON.parse(window.localStorage.getItem("users"))
-    usuarios.map((item)=>{
-      if(item.idUsuario === conductor){
-        this.nombreConductor = item.nombre
-        this.telefonoConductor = item.telefono
-        this.correoConductor = item.correo
-      }
+    this.usuarioService.getAllUser("0").subscribe(data => {
+      let usuarios = data;
+      usuarios.map((item)=>{
+        if(item.idUsuario === conductor){
+          this.nombreConductor = item.nombre
+          this.telefonoConductor = item.telefono
+          this.correoConductor = item.correo
+        }
+      })
     })
+    
   }
 
 

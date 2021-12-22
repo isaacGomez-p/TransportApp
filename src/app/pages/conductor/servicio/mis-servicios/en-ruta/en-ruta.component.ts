@@ -17,6 +17,7 @@ export class EnRutaComponent implements OnInit {
   directionsService = new google.maps.DirectionsService();
   directionsDisplay = new google.maps.DirectionsRenderer();
   origin: Coordenadas;
+  ubicacionActual: Coordenadas;
   location: Coordenadas;
   validacion = true;
  
@@ -41,6 +42,7 @@ export class EnRutaComponent implements OnInit {
 
  ngOnDestroy(){
     //window.location.reload();
+    this.interval.unsubscribe();
     clearInterval(this.interval);
   }
 
@@ -53,17 +55,19 @@ export class EnRutaComponent implements OnInit {
     let coordenadasO: Coordenadas = JSON.parse(servicio.lugarOrigen);
     let coordenadasD: Coordenadas = JSON.parse(servicio.lugarDestino);
     console.log("-- " + coordenadasD.lng)
-    this.origin = { lat: coordenadasO.lat, lng: coordenadasO.lng }
-    this.destination = { lat: coordenadasD.lat, lng: coordenadasD.lng }    
+    this.origin = coordenadasO
+    this.destination = coordenadasD    
+    this.cargarCoordenadas();
     console.log(" 2 ")
     if(this.origin.lat !== null && this.origin.lng !== null){
       console.log(" 3 ")
       // create a new map by passing HTMLElement
       const mapEle: HTMLElement = document.getElementById('map');    
       const indicatorsEle: HTMLElement = document.getElementById('indicators');
+      console.log(" 3 - 2 ")
       // create map
       this.map = new google.maps.Map(mapEle, {
-        center: this.origin,
+        center: this.ubicacionActual,
         zoom: 12
       });
       console.log(" 4 ")
@@ -141,8 +145,8 @@ export class EnRutaComponent implements OnInit {
       //console.log("idInterval -> " + JSON.stringify(this.interval))
       console.log("calculando ubicacion --- en ruta")
       this.cargarCoordenadas();
-      this.addMarkerArrive(this.map, this.origin)
-    });        
+      this.addMarkerArrive(this.map, this.ubicacionActual)
+    });
   }
 
   async terminarRecorrido() {
@@ -202,7 +206,7 @@ export class EnRutaComponent implements OnInit {
   }
 
   async cargarCoordenadas(){
-    this.origin = { lat: this.usuarioService.latitud, lng: this.usuarioService.longitud }
+    this.ubicacionActual = { lat: this.usuarioService.latitud, lng: this.usuarioService.longitud }
     this.latitudUbicacion = this.origin.lat;
     this.longitudUbicacion = this.origin.lng;
     //this.latitudUbicacion = this.usuarioService.latitud;

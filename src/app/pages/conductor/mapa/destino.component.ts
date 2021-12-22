@@ -28,7 +28,7 @@ export class DestinoComponent implements OnInit {
   ubicacionValidacion = false;
   wayPoint: WayPoint[];
   destination: Coordenadas;
-
+  espera: boolean = true;
   ubicacion: UbicacionModel;
 
   marker: any;
@@ -37,9 +37,12 @@ export class DestinoComponent implements OnInit {
   estadoEspera: boolean = false;
   servicio: IServicio;
   servicios : IServicio[] = [];
+  serviciosRechazados: IServicio[] = [];
 
   latitudUbicacion: number;
   longitudUbicacion: number;
+
+  estadoBoton: boolean = false;
 
   private alert: any;  
 
@@ -59,11 +62,27 @@ export class DestinoComponent implements OnInit {
   ngOnDestroy(){
     //window.location.reload();
     clearInterval(this.interval);
+    this.interval.unsubscribe();
   }
 
   ionViewDidEnter() {    
     this.dato = this.activatedRoute.snapshot.paramMap.get('dato');    
     this.cargarDatos();
+    //this.cambiarEstadoServicios();
+  }
+
+  cambiarEstadoServicios(){
+    this.servicioService.getAll(0).subscribe(data=>{
+      this.servicios = data;
+      this.servicios.map((i)=>{
+        if(i.estado === 5){
+          i.estado = 1;
+          this.servicioService.putServicio(i, i.idServicio).subscribe((d)=>{
+
+          })
+        }
+      })
+    })
   }
 
   async cargarDatos(){
@@ -72,6 +91,21 @@ export class DestinoComponent implements OnInit {
     }else{
       this.ubicacion = new UbicacionModel
     }*/
+    await this.validarServicioActivo();    
+  }
+
+  async validarServicioActivo(){
+    this.servicioService.getAll(0).subscribe((data)=>{
+      let servicios = data;
+      servicios.map((i)=>{
+        this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((dataU)=>{
+          if(i.estado === 2 && i.idConductor === dataU[0].idUsuario){
+            this.toastConfirmacion("Ya tiene un servicio asignado", "warning");
+            this.router.navigateByUrl('/misServicios');
+          }
+        });        
+      })
+    })
     await this.cargarUbicacion();
     this.loadMap();
     this.periodic();
@@ -125,29 +159,35 @@ export class DestinoComponent implements OnInit {
     })
   }
   
-  async alertCancelar() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Confirmación',
-      message: '¿Desea terminar el servicio?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            
-          }
-        }, {
-          text: 'Confirmar',
-          handler: () => {
-            this.terminarServicio();
-          }
-        }
-      ]
-    });
+  volver(){
+    this.router.navigateByUrl('/perfil');
+  }
 
-    await alert.present();
+  async alertCancelarServicio() {
+    if(this.estadoBoton){    
+      const alert = await this.alertController.create({
+        cssClass: 'my-custom-class',
+        header: 'Confirmación',
+        message: '¿Desea terminar el servicio?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (blah) => {
+              
+            }
+          }, {
+            text: 'Confirmar',
+            handler: () => {
+              this.terminarServicio();
+            }
+          }
+        ]
+      });
+
+      await alert.present();
+    }
   }
 
   terminarServicio(){
@@ -196,8 +236,8 @@ export class DestinoComponent implements OnInit {
     const image = {
       url: '../../../assets/img/taxi.png',
       size: {
-        width: 24,
-        height: 24
+        width: 50,
+        height: 50
       }
     };
 
@@ -247,8 +287,13 @@ export class DestinoComponent implements OnInit {
     let lati = this.latitudUbicacion
     let long = this.longitudUbicacion
     this.servicios.map(item => {
+      this.serviciosRechazados.map((r) => {
+        if(r.idServicio === item.idServicio){
+          console.log("---------- encontro rechazado ");
+          item.estado = -1;
+        }
+      })
       if(item.estado === 1){
-
         console.log("1---------- " + item.lugarDestino)
         let destino : Coordenadas = JSON.parse(item.lugarDestino)      
         if(destino !== null ){
@@ -276,14 +321,29 @@ export class DestinoComponent implements OnInit {
           aux = item.distancia;
           this.servicio = item.servicio //se guarda todo el objeto de servicio
         }
-      })      
+      })     
       this.ofrecerServicio(this.servicio);
     }
   }
 
   ofrecerServicio(servicio : IServicio){
-    this.estadoEspera = true;
-    this.alertService(servicio);
+    this.estadoEspera = true;    
+    this.servicioEspera(servicio)
+  }
+
+  servicioEspera(servicio : IServicio){
+    servicio.estado = 5;
+    this.servicioService.putServicio(servicio, servicio.idServicio).subscribe(data =>{
+      this.alertService(servicio);
+    })
+  }
+
+  servicioHabilitado(servicio : IServicio){
+    servicio.estado = 1;
+    this.servicioService.putServicio(servicio, servicio.idServicio).subscribe(data =>{
+      this.serviciosRechazados.push(servicio);
+    })
+    
   }
 
   async alertService(servicio : IServicio) {
@@ -291,6 +351,7 @@ export class DestinoComponent implements OnInit {
     if(this.estadoEspera){    
       this.alert = await this.alertController.create({
         cssClass: 'my-custom-class',
+        backdropDismiss: false,
         header: 'Servicio nuevo',
         message: 'Origen: ' + servicio.lugarOrigen + ' - Destino: ' + servicio.lugarDestino,
         buttons: [
@@ -300,6 +361,7 @@ export class DestinoComponent implements OnInit {
             cssClass: 'secondary',
             handler: (blah) => {
               this.estadoEspera = false;
+              this.servicioHabilitado(servicio);
             }
           }, {
             text: 'Aceptar',
@@ -308,7 +370,7 @@ export class DestinoComponent implements OnInit {
             }
           }
         ]
-      });
+      });      
       await this.alert.present();
     }
   }
@@ -325,7 +387,7 @@ export class DestinoComponent implements OnInit {
         if(i.idServicio === servicio.idServicio){
           console.log("confirmarServicio -> Id: " + servicio.idServicio + " - " + JSON.stringify(i))
           //Se valida que el servicio siga disponibe
-          if(i.estado === 1){ // 1 - Significa disponible
+          if(i.estado === 5){ // 5 - Significa que ésta en espera
             //Se consulta en la BD al usuario logueado con el token
             this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((dataU)=>{
               i.estado = 2;
@@ -335,6 +397,8 @@ export class DestinoComponent implements OnInit {
                 this.toastConfirmacion('Se asigno correctamente el servicio', 'success')    
                 this.cerrarAlert();
                 this.pintarMapa(i);
+                this.estadoBoton = true;
+                this.espera = false;
               } ,
               (err) => {
                   if(err.status === 500){

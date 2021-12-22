@@ -22,18 +22,32 @@
 </ion-footer>
 
 <ion-content padding class="tab5-content">
-  <div #map2 id="map2"></div>
 
-  <ion-fab horizontal="end" vertical="top" slot="fixed">
-    <ion-fab-button color="light" (click)="alertCancelar()">
-      <ion-icon md="caret-back" ios="chevron-back-circle-outline"></ion-icon>
-    </ion-fab-button>    
-  </ion-fab>
+<!--  <div [ngIf]="espera">
+    <div class="ion-padding custom-skeleton">
+      <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+      <ion-skeleton-text animated></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 88%"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 70%"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+    </div>      
+  </div>  -->
+ <!-- <div [ngIf]="espera==false">-->
+    <div #map2 id="map2"></div>
 
-  <!--<ion-fab horizontal="end" vertical="bottom" slot="fixed" >
-    <ion-fab-button (click)="ubicacionActual()" color="warning">
-      <ion-icon name="location-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>-->
+    <ion-fab horizontal="end" vertical="top" slot="fixed" >
+      <ion-fab-button color="dark">
+        <ion-icon ios="apps-outline"></ion-icon>
+      </ion-fab-button>    
+      <ion-fab-list side="bottom">
+        <ion-fab-button (click)="volver()"><ion-icon name="arrow-back-circle-outline"></ion-icon></ion-fab-button>
+      </ion-fab-list>
+      <ion-fab-list side="start" >
+        <ion-fab-button color="success" (click)="alertCancelarServicio()"><ion-icon name="checkmark-outline"></ion-icon></ion-fab-button>
+      </ion-fab-list>
+      
+    </ion-fab>  
+<!--  </div>-->
+
 </ion-content>
 

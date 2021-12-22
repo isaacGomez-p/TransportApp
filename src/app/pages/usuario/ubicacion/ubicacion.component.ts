@@ -28,11 +28,15 @@ export class UbicacionComponent implements OnInit, OnDestroy {
 
   ubicacion: UbicacionModel;
 
-  marker: any;
+  markerStart: any;
+  markerArrive: any;
   dato: string;
 
   origen: boolean = false;
   destino: boolean = false;
+
+  estadoBotonAceptar: boolean = true;
+  estadoBotonVolver: boolean = true;
 
   constructor(private activatedRoute: ActivatedRoute, 
     public toastController: ToastController, 
@@ -40,7 +44,11 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     private router: Router){     
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    if(this.activatedRoute.snapshot.paramMap.get("dato")==="AgregarServicio"){
+
+    }
+  }
 
   ngOnDestroy(){
     //window.location.reload();
@@ -48,7 +56,9 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     //mapEle.remove()
   }
 
-  ionViewDidEnter() {    
+  ionViewDidEnter() {
+    this.markerStart = null;
+    this.markerArrive = null;
     this.dato = this.activatedRoute.snapshot.paramMap.get('dato');    
     if(this.dato === 'Origen'){
       this.origen = true;
@@ -108,10 +118,9 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         lat : marker.getPosition().lat(),
         lng : marker.getPosition().lng(),
       }
-      this.marker = location;
-      window.localStorage.setItem("arrive", JSON.stringify(location));
-      this.ubicacionAlert();
-
+      this.markerArrive = location;
+      window.localStorage.setItem("arrive", JSON.stringify(location));          
+      this.drawRoute();
       console.log("++1"+location)
     })
   }
@@ -127,42 +136,44 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         lat : marker.getPosition().lat(),
         lng : marker.getPosition().lng(),
       }
-      this.marker = location;
+      this.markerStart = location;
       window.localStorage.setItem("start", JSON.stringify(location));
-
+      this.drawRoute();
       console.log("++2"+location)
     })
-  }
+  }  
 
   drawRoute(){
     console.log(" 1 ")
-    console.log("ruta: " + JSON.stringify(window.localStorage.getItem("ruta")))
-    let start = JSON.parse(window.localStorage.getItem("start"));
-    let arrive = JSON.parse(window.localStorage.getItem("arrive"));
-    console.log("-- " + JSON.stringify(start))
-    console.log("--55 " + JSON.stringify(arrive))
-    let coordenadasO: Coordenadas = start;
-    let coordenadasD: Coordenadas = arrive;
-    console.log("-- " + JSON.stringify(coordenadasD.lat))
-    this.origin = { lat: coordenadasO.lat, lng: coordenadasO.lng }
-    this.destination = { lat: coordenadasD.lat, lng: coordenadasD.lng }    
-    if(this.origin.lat !== null && this.origin.lng !== null){
-      // create a new map by passing HTMLElement
-      const mapEle: HTMLElement = document.getElementById('map');    
-      const indicatorsEle: HTMLElement = document.getElementById('indicators');
-      // create map
-      this.map = new google.maps.Map(mapEle, {
-        center: this.origin,
-        zoom: 12
-      });
-      this.directionsDisplay.setMap(this.map);
-      this.directionsDisplay.setPanel(indicatorsEle);
-      google.maps.event.addListenerOnce(this.map, 'idle', () => {
-        mapEle.classList.add('show-map');
-        this.calculateRoute();        
-      });      
-    }else{
-      this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
+    if(this.markerArrive !== null && this.markerStart!== null){
+      console.log("ruta: " + JSON.stringify(window.localStorage.getItem("ruta")))
+      let start = JSON.parse(window.localStorage.getItem("start"));
+      let arrive = JSON.parse(window.localStorage.getItem("arrive"));
+      console.log("-- " + JSON.stringify(start))
+      console.log("--55 " + JSON.stringify(arrive))
+      let coordenadasO: Coordenadas = start;
+      let coordenadasD: Coordenadas = arrive;
+      console.log("-- " + JSON.stringify(coordenadasD.lat))
+      this.origin = { lat: coordenadasO.lat, lng: coordenadasO.lng }
+      this.destination = { lat: coordenadasD.lat, lng: coordenadasD.lng }    
+      if(this.origin.lat !== null && this.origin.lng !== null){
+        // create a new map by passing HTMLElement
+        const mapEle: HTMLElement = document.getElementById('map');    
+        const indicatorsEle: HTMLElement = document.getElementById('indicators');
+        // create map
+        this.map = new google.maps.Map(mapEle, {
+          center: this.origin,
+          zoom: 12
+        });
+        this.directionsDisplay.setMap(this.map);
+        this.directionsDisplay.setPanel(indicatorsEle);
+        google.maps.event.addListenerOnce(this.map, 'idle', () => {
+          mapEle.classList.add('show-map');
+          this.calculateRoute();        
+        });      
+      }else{
+        this.toastConfirmacion('Por favor asegurese de tener activados los servicios de ubicación.', 'warning')
+      }
     }
   }
 
@@ -184,8 +195,36 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     });
   }
   
-  async regresar(){
-    this.confirmarUbicacion();
+  async regresarEvento(){
+    this.messageAlert();
+  }
+
+  private confirmarRegresar(){
+    this.router.navigateByUrl('/perfil');
+  }
+
+  async messageAlert() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class', 
+      header: 'Perdera todo los datos',     
+      message: '¿Desea volver?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            
+          }
+        }, {
+          text: 'Confirmar',
+          handler: () => {
+            this.confirmarRegresar();
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   async ubicacionAlert() {
@@ -204,7 +243,7 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         }, {
           text: 'Confirmar',
           handler: () => {
-            this.drawRoute();
+            this.confirmarUbicacion();
           }
         }
       ]
@@ -212,31 +251,37 @@ export class UbicacionComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  confirmarUbicacion(){
-    //Valida si ya fue ingresado las coordenadas de origen
-    if(JSON.parse(window.localStorage.getItem("start")) != null){
-      console.log(JSON.parse(window.localStorage.getItem("start")));
-    }
-    if(JSON.parse(window.localStorage.getItem("start")) != null){
-      console.log(JSON.parse(window.localStorage.getItem("start")));
-    }
-    if(this.dato === "Origen"){      
-      this.ubicacion.coordenadasOrigen = {
-        lat: this.marker.lat,
-        lng: this.marker.lng,
+
+
+  confirmarUbicacion(){    
+    if(this.markerArrive !== null && this.markerStart!== null){
+      //Valida si ya fue ingresado las coordenadas de origen
+      if(JSON.parse(window.localStorage.getItem("start")) != null){
+        console.log(JSON.parse(window.localStorage.getItem("start")));
       }
-      this.ubicacion.origen = true;
-      this.ubicacion.dato = 1;
-    }else{      
-      this.ubicacion.coordenadasDestino = {
-        lat: this.marker.lat,
-        lng: this.marker.lng,
+      if(JSON.parse(window.localStorage.getItem("start")) != null){
+        console.log(JSON.parse(window.localStorage.getItem("start")));
       }
-      this.ubicacion.destino = true;
-      this.ubicacion.dato = 2;
+      if(this.dato === "Origen"){      
+        this.ubicacion.coordenadasOrigen = {
+          lat: this.markerStart.lat,
+          lng: this.markerStart.lng,
+        }
+        this.ubicacion.origen = true;
+        this.ubicacion.dato = 1;
+      }else{      
+        this.ubicacion.coordenadasDestino = {
+          lat: this.markerArrive.lat,
+          lng: this.markerArrive.lng,
+        }
+        this.ubicacion.destino = true;
+        this.ubicacion.dato = 2;
+      }
+      window.localStorage.setItem("ubicacionCoordenadas", JSON.stringify(this.ubicacion))
+      this.router.navigateByUrl('/agregarServicios/mapa');
+    }else{
+      this.toastConfirmacion('Por favor seleccione el origen y el destino.', 'warning')
     }
-    window.localStorage.setItem("ubicacionCoordenadas", JSON.stringify(this.ubicacion))
-    this.router.navigateByUrl('/agregarServicios/mapa');
   }
 
   async toastConfirmacion(mensaje, colorT) {
