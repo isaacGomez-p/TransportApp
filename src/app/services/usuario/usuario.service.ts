@@ -42,7 +42,7 @@ export class UsuarioService {
   */
 
   // Retorna todos los usuarios - Si envia 0 retorna todos los usuarios y si se envia el token lo busca
-  getAllUser(token: string): Observable<IUsuario[]>{       
+  getAllUser(token: string): Observable<IUsuario[]>{    
     return this.http.get<IUsuario[]>(`${this.urlService}/TRS_?token=`+token);
   }  
 

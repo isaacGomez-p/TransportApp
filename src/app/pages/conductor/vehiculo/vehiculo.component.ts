@@ -23,12 +23,14 @@ export class VehiculoComponent implements OnInit {
   }
 
   cargarVehiculos() {
-
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(dataUsuario => {
-      this.vehiculoService.getVehiculos(dataUsuario[0].idUsuario).subscribe(dataVehiculo => {
+    let dataUsuario = JSON.parse(window.localStorage.getItem("user"));
+    if(dataUsuario){
+    //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(dataUsuario => {
+      this.vehiculoService.getVehiculos(dataUsuario.idUsuario).subscribe(dataVehiculo => {
         this.vehiculos = dataVehiculo
       })
-    })
+//    })
+    }
 
     /*let usuarios = JSON.parse(window.localStorage.getItem("users"))
     usuarios.map((item) => {

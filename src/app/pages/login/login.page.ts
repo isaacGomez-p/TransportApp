@@ -72,7 +72,8 @@ export class LoginPage implements OnInit{
             console.log("data login: " + JSON.stringify(data))            
             /*if(data[1].rol === 1){
                 this.presentAlertRadio();
-            }else{*/
+            }else{*/            
+                window.localStorage.setItem("user", JSON.stringify(data[0]));
                 window.localStorage.setItem("token", data[0].token);
                 this.menuCtrl.enable(true, 'menuPrincipal');
                 this.router.navigateByUrl('/perfil');

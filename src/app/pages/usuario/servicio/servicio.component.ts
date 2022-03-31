@@ -41,10 +41,11 @@ export class ServicioComponent implements OnInit {
     this.servicio = [];
     //let servicios = JSON.parse(window.localStorage.getItem("servicios"))
     //let usuarios = JSON.parse(window.localStorage.getItem("users"))
-
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
-      this.rol = data[0].rol + "";
-      this.serviciosService.getAll(data[0].idUsuario).subscribe((dataService)=>{
+    let data = JSON.parse(window.localStorage.getItem("user"));
+    if(data){
+    //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
+      this.rol = data.rol + "";
+      this.serviciosService.getAll(data.idUsuario).subscribe((dataService)=>{
         if(this.opcion === '6'){
           this.servicio = dataService;
         }else{
@@ -56,7 +57,8 @@ export class ServicioComponent implements OnInit {
           })
         }                
       })
-    })
+    //})
+    }
 
     /*usuarios.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){

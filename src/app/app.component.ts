@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   }
 
   OnViewDidEnter(){    
+    this.menuCtrl.enable(false);
     //this.cargarDatos()
   }
 

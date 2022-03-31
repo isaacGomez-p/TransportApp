@@ -64,9 +64,12 @@ export class MasInfoComponent implements OnInit {
 
 
   datosUsuario() {
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
-      this.rol = data[0].rol
-    });
+    let data = JSON.parse(window.localStorage.getItem("user"));
+    if(data){
+    //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
+      this.rol = data.rol
+    //});
+    }
     /*let usuario = JSON.parse(window.localStorage.getItem("users"));
     usuario.map((item) => {
       if (item.token === window.localStorage.getItem("token")) {
@@ -76,13 +79,14 @@ export class MasInfoComponent implements OnInit {
   }
 
   asignarServicio() {
-
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(data => {
+    let data = JSON.parse(window.localStorage.getItem("user"));
+    if(data){
+    //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(data => {
       this.servicioService.getAll(0).subscribe((dataService) => {
         let servicios = dataService;
         servicios.map((itemServicios) => {
           if (itemServicios.idServicio === this.idServicio) {
-            itemServicios.idConductor = data[0].idUsuario
+            itemServicios.idConductor = data.idUsuario
             itemServicios.estado = 2
             console.log("servicio: " + JSON.stringify(itemServicios))
             this.servicioService.putServicio(itemServicios, itemServicios.idServicio).subscribe(res => {
@@ -92,7 +96,8 @@ export class MasInfoComponent implements OnInit {
           }
         })
       })
-    })
+    //})
+    }
 
    /* let usuarios = JSON.parse(window.localStorage.getItem("users"));
     usuarios.map((item) => {

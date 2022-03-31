@@ -11,4 +11,5 @@ export interface IServicio {
     valor: string;    
     rol: number;
     fechaEntrega: Date;
+    direccion: string;
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { IRol } from 'src/model/IRol';
 import { IUsuario } from 'src/model/IUsuario';
 import { UsuarioService } from 'src/app/services/usuario/usuario.service';
@@ -26,7 +26,10 @@ export class RegistroPage implements OnInit {
 
     listaRoles: IRol[] = []
 
-    constructor(private toastController: ToastController, private router: Router, private usuarioService: UsuarioService) { }
+    constructor(private toastController: ToastController, 
+        private router: Router, 
+        private usuarioService: UsuarioService,
+        private loadingController: LoadingController) { }
 
     ngOnInit() {
         this.listaRoles.push(
@@ -41,8 +44,15 @@ export class RegistroPage implements OnInit {
         )
     }
 
-    registrar(form) {
+    async registrar(form) {
         if (this.validarDatos(form)) {
+
+            const loading = await this.loadingController.create({
+                cssClass: 'my-custom-class',
+                message: 'Please wait...'                
+              });
+            await loading.present();
+
             let usuario : IUsuario = {
                 cedula: form.value.cedula,
                 confirContra: '',
@@ -58,8 +68,9 @@ export class RegistroPage implements OnInit {
                 token: this.generaCodigo(),
                 usuario: form.value.usuario.toUpperCase()
             }
-
+            
             this.usuarioService.postUsuario(usuario).subscribe(data => {
+                loading.dismiss();
                 //Rol 1 es conductor
                 console.log(" data " + JSON.stringify(data));
                 if(form.value.rol === "1"){
@@ -218,7 +229,7 @@ export class RegistroPage implements OnInit {
     */
     generaCodigo(): string {
         let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+ABCDEFGHIJKLMNOPQRSTUVXYZ';    
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVXYZ';    
         for (let i = 0; i < 7; i++) {
             result += characters.charAt(Math.floor(Math.random() * characters.length));
         }

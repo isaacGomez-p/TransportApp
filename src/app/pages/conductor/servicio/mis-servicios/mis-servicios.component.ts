@@ -27,18 +27,23 @@ export class MisServiciosComponent implements OnInit {
 
   misServicios(){
     this.servicios = [];
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(data => {
+    let data = JSON.parse(window.localStorage.getItem("user"));
+    if(data){
+      //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe(data => {
       this.serviciosService.getAll(0).subscribe(dataServices => {
         let servicios = dataServices;
         if(servicios !== null){
           servicios.map((itemServicios)=>{            
-            if(itemServicios.idConductor === data[0].idUsuario && itemServicios.estado === 2){
+            if(itemServicios.idConductor === data.idUsuario && itemServicios.estado === 2){
               this.servicios.push(itemServicios)
             }
           })
         }
-      })      
-    })
+      })    
+    }else{
+      this.router.navigateByUrl('/login');
+    }
+    //})
    /* let usuario = JSON.parse(window.localStorage.getItem("users"))
     usuario.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){

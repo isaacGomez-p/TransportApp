@@ -113,8 +113,18 @@ export class UbicacionComponent implements OnInit, OnDestroy {
         lng : marker.getPosition().lng(),
       }
       this.marker = location;
-
+      marker.getTitle()
       console.log(location)
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode(
+        { location: location },
+        (
+          results = google.maps.GeocoderResult,
+          status= google.maps.GeocoderStatus
+        ) => {
+          console.log("results" + JSON.stringify(results))
+        });
+
     })
   }
   

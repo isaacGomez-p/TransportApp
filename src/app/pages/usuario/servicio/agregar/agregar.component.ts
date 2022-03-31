@@ -53,8 +53,10 @@ export class AgregarComponent implements OnInit {
         idUsuario = item.idUsuario
       }
     })*/
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
-      idUsuario = data[0].idUsuario
+    let data = JSON.parse(window.localStorage.getItem("user"));
+    if(data){
+   // this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((data)=>{
+      idUsuario = data.idUsuario
       let servicio : IServicio = {
         idServicio: null,
         descripcion: form.value.descripcion,
@@ -67,7 +69,8 @@ export class AgregarComponent implements OnInit {
         lugarOrigen: form.value.lugarOrigen,
         valor: form.value.valor +"",
         rol: -1,
-        fechaEntrega: null
+        fechaEntrega: null,
+        direccion: ""
       }
       console.log("--- " + JSON.stringify(servicio))
       this.servicioService.postServicios(servicio).subscribe(res => {
@@ -75,7 +78,8 @@ export class AgregarComponent implements OnInit {
         this.resetData();
         this.router.navigateByUrl('/servicios');
       })
-    })
+    //})
+    }
     /*if (window.localStorage.getItem("servicios")) {
       this.servicio = JSON.parse(window.localStorage.getItem("servicios"))
     }

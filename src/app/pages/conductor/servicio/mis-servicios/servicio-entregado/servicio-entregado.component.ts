@@ -29,18 +29,21 @@ export class ServicioEntregadoComponent implements OnInit {
 
   misServicios(){
     this.servicios = [];
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((dataUsuario)=>{
+    let dataUsuario = JSON.parse(window.localStorage.getItem("user"));
+    if(dataUsuario){
+    //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe((dataUsuario)=>{
       this.serviciosService.getAll(0).subscribe((dataService)=>{
         let servicios = dataService
         if(servicios !== null){
           servicios.map((itemServicios)=>{
-            if(itemServicios.idConductor === dataUsuario[0].idUsuario && itemServicios.estado === 3){
+            if(itemServicios.idConductor === dataUsuario.idUsuario && itemServicios.estado === 3){
               this.servicios.push(itemServicios)
             }
           })
         }
       })
-    })
+    //})
+    }
   /*  let usuario = JSON.parse(window.localStorage.getItem("users"))
     usuario.map((item)=>{
       if(item.token === window.localStorage.getItem("token")){

@@ -16,6 +16,8 @@ import { Coordenadas } from '../conductor/servicio/mis-servicios/en-ruta/model/c
 })
 export class PerfilComponent implements OnInit {
 
+  intervalTime: number = 2000;
+
   usuario: string = "";
   cedula: string = "";
   telefono: string = "";
@@ -23,13 +25,14 @@ export class PerfilComponent implements OnInit {
   rol: string = "";
 
   servicios : IServicio[] = [];
+  serviciosRechazados : number[] = [];
 
   latitudUbicacion: number;
   longitudUbicacion: number;
 
   estadoEspera: boolean = false;
   servicio: IServicio;
-
+  validacion: number ;
   constructor(private menuCtrl: MenuController, 
     private appComponent: AppComponent,
     private usuarioService: UsuarioService,
@@ -47,21 +50,23 @@ export class PerfilComponent implements OnInit {
   }
 
   cargarDatos(){
-    this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe( data => {
-      console.log("usuario " + JSON.stringify(data));
-      this.appComponent.usuario = data[0].nombre
-        this.usuario = data[0].nombre
-        this.appComponent.rol = data[0].rol + ""
-        this.cedula = data[0].cedula
-        this.correo = data[0].correo
-        this.telefono = data[0].telefono
-        if(data[0].rol === 1){
+    let data = JSON.parse(window.localStorage.getItem("user"));
+    if(data){
+    //this.usuarioService.getAllUser(window.localStorage.getItem("token")).subscribe( data => {      
+      this.appComponent.usuario = data.nombre
+        this.usuario = data.nombre
+        this.appComponent.rol = data.rol + ""
+        this.cedula = data.cedula
+        this.correo = data.correo
+        this.telefono = data.telefono
+        if(data.rol === 1){
           this.rol = "Conductor"
           this.periodic();
         }else{ 
           this.rol = "Usuario"
         }
-    })
+    //})
+    }
 
     /*let usuarios = JSON.parse(window.localStorage.getItem("users"))
     usuarios.map((item)=>{
@@ -84,12 +89,11 @@ export class PerfilComponent implements OnInit {
   }
 
   periodic(){
-    interval(2000).subscribe(x => {
-      if(this.estadoEspera === false){      
+    interval(this.intervalTime).subscribe(x => {
+      if(this.estadoEspera === false){
         this.cargarUbicacion();
-        this.servicioService.getAll(0).subscribe(data => {
-          this.servicios = data;
-          console.log(JSON.stringify(data) + "---" + this.servicios.length + "--" );
+        this.servicioService.getAll(0).subscribe(data => {          
+          this.servicios = data;          
           this.calcularPuntosMasCercanos();
         })
       }
@@ -115,7 +119,7 @@ export class PerfilComponent implements OnInit {
     var d = R * c;
     
     let resultado = d;
-    console.log("1 --- "+ resultado)
+    //console.log("1 --- "+ resultado)
     //return resultado;
 
     return d.toFixed(3); //Retorna tres decimales
@@ -126,56 +130,70 @@ export class PerfilComponent implements OnInit {
   }    
   
   calcularPuntosMasCercanos(){       
-    let numeros = [];
-    let idServi = [];
+    let numeros = [];    
     let lati = this.latitudUbicacion
     let long = this.longitudUbicacion
-    this.servicios.map(item => {
-      let destino : Coordenadas = JSON.parse(item.lugarDestino)
-      
-      if(destino !== null ){
-        let latiDestino = destino.lat
-        let longDestino = destino.lng
-        let distancia = Number(this.getKilometros(lati, long, latiDestino, longDestino));
-        numeros.push(
-          {
-            servicio: item,
-            distancia: distancia
-          }
-        )        
-      }      
-    })
-    let aux = numeros[0].distancia;
-    console.log("1 - " + aux)
-    numeros.map(item => {      
-      console.log("dato - " + item.distancia)
-      if(item.distancia < aux){
-        console.log("-- entro" + item.distancia)
-        aux = item.distancia;
-        this.servicio = item.servicio
+
+    this.servicios.map(item => {    
+      if(item.estado === 1){
+        if(!this.serviciosRechazados.includes(item.idServicio)){      
+          console.log(" no ha rechazado " + item.idServicio)
+          let destino : Coordenadas = JSON.parse(item.lugarDestino)      
+          if(destino !== null ){
+            let latiDestino = destino.lat
+            let longDestino = destino.lng
+            let distancia = Number(this.getKilometros(lati, long, latiDestino, longDestino));          
+            numeros.push(
+              {
+                servicio: item,
+                distancia: distancia
+              }
+            )        
+          }      
+        }
       }
     })
 
-    this.ofrecerServicio();
+    
+    if(numeros.length === 0){
 
+    }else{          
+      let aux = numeros[0].distancia;      
+      numeros.map(item => {              
+        if(item.distancia <= aux){          
+          aux = item.distancia;
+          this.servicio = item.servicio
+        }
+      })
+      if(this.servicio !== undefined){
+        this.ofrecerServicio();
+      }
+    }    
   }
 
   async ofrecerServicio() {
+    this.estadoEspera = true;
+    console.log("servicio - " + JSON.stringify(this.servicio))
     console.log("antes - " + this.servicio.estado)
+    if(this.servicio.direccion === undefined || this.servicio.direccion === null){
+      this.servicio.direccion = "Pilas modificar"
+    }
     const alert = await this.alertController.create({
       cssClass: 'my-custom-class',
-      header: 'Confirmando entrega',
+      header: this.servicio.direccion,
       subHeader: '',
       message: '¿Desea aceptar el servicio?',
       buttons: [
         {
-          text: 'No',
-          role: 'cancel',
+          text: 'No',          
           cssClass: 'secondary',          
+          handler: () => {
+            this.rechazarServicio();
+          }
         }, {
           text: 'Si',
           handler: () => {
-            
+            this.aceptarServicio();
           }
         }
       ]
@@ -185,6 +203,16 @@ export class PerfilComponent implements OnInit {
 
     const { role } = await alert.onDidDismiss();
     console.log('onDidDismiss resolved with role', role);
+  }
+
+  aceptarServicio(){
+    
+  }
+
+  rechazarServicio(){
+    this.serviciosRechazados.push(this.servicio.idServicio)
+    console.log("serviciosRechazados-> " + JSON.stringify(this.serviciosRechazados))
+    this.estadoEspera = false;
   }
 
 }
